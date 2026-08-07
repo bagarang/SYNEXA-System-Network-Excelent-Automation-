@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - Custom Business Software</title>
+    
+    <!-- Import Google Fonts: Space Grotesk (Heading) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES (THEME PALETTE) === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --success-emerald: #10B981;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Used in Footer) */
+            --dark-bg-navy: #020617;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif; /* Font Body */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif; /* Font Heading */
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        /* State saat discroll (Stripe/Apple style) */
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary-slate);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* === HERO SECTION === */
+        .hero-wrapper {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, var(--card-white) 0%, var(--bg-soft-white) 100%);
+            overflow: hidden;
+        }
+
+        /* BACKGROUND CANVAS */
+        #networkCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1300px;
+            padding: 120px 5% 60px; /* Top padding offset for navbar */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* === LEFT COLUMN: TEXT & CTA === */
+        .left-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.2s;
+        }
+
+        .subtitle-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-size: 3.8rem;
+            line-height: 1.1;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 25px;
+            letter-spacing: -1.5px;
+        }
+
+        .main-title span {
+            color: var(--accent-cyan);
+            display: block;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--secondary-slate);
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-navy);
+            color: var(--card-white);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2);
+            background: #1E293B; /* Slightly lighter navy */
+        }
+
+        .btn-secondary {
+            background: var(--card-white);
+            color: var(--primary-navy);
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-light-blue);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            transform: translateY(-3px);
+        }
+
+        /* === RIGHT COLUMN: MULTI-DEVICE ANIMATED MOCKUPS === */
+        .right-content {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.4s;
+        }
+
+        /* Mockup Base Styling (Radius 20px, Soft Shadow, 1px Border) */
+        .mockup-base {
+            background: var(--primary-navy);
+            border-radius: var(--radius-main);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: absolute;
+            padding: 12px;
+        }
+
+        /* Laptop */
+        .mockup-laptop {
+            width: 420px;
+            height: 260px;
+            transform: rotateY(-12deg) rotateX(4deg);
+            z-index: 2;
+        }
+
+        .laptop-screen {
+            width: 100%;
+            height: 100%;
+            background: #1E293B;
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Tablet */
+        .mockup-tablet {
+            width: 180px;
+            height: 250px;
+            left: 0;
+            bottom: 20px;
+            transform: rotateY(15deg) rotateX(5deg) translateZ(60px);
+            z-index: 3;
+        }
+
+        .tablet-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--primary-navy);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Mobile */
+        .mockup-mobile {
+            width: 90px;
+            height: 180px;
+            right: 20px;
+            bottom: 40px;
+            transform: rotateY(-18deg) translateZ(90px);
+            z-index: 4;
+        }
+
+        .mobile-screen {
+            width: 100%;
+            height: 100%;
+            background: #1E293B;
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Animated Dashboard Elements */
+        .dash-header {
+            width: 100%; height: 12px;
+            background: #334155; border-radius: 4px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+        }
+        .dash-dots { display: flex; gap: 4px; }
+        .dash-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-cyan); }
+        
+        .dash-body { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; height: 100%; }
+        
+        .dash-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px; padding: 10px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .animated-chart-bars { display: flex; align-items: flex-end; gap: 5px; height: 50px; width: 100%; }
+        .bar { flex: 1; background: var(--accent-cyan); border-radius: 3px 3px 0 0; animation: pulseBar 2s infinite alternate ease-in-out; }
+        .bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 75%; animation-delay: 0.3s; }
+        .bar:nth-child(3) { height: 50%; animation-delay: 0.5s; }
+        .bar:nth-child(4) { height: 90%; animation-delay: 0.2s; }
+
+        .animated-line-svg {
+            width: 100%; height: 40px; stroke: var(--accent-cyan); stroke-width: 2; fill: none;
+            stroke-dasharray: 200; stroke-dashoffset: 200; animation: drawLine 3s infinite linear;
+        }
+
+        .live-status { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; color: var(--accent-cyan); font-family: 'Inter', sans-serif;}
+        .pulse-node { width: 6px; height: 6px; background: var(--success-emerald); border-radius: 50%; box-shadow: 0 0 10px var(--success-emerald); animation: blink 1.5s infinite; }
+
+        /* Floating / Mouse Parallax effect on hover */
+        .right-content:hover .mockup-laptop { transform: rotateY(0deg) rotateX(0deg) scale(1.02); }
+        .right-content:hover .mockup-tablet { transform: rotateY(0deg) translateZ(80px); }
+        .right-content:hover .mockup-mobile { transform: rotateY(0deg) translateZ(120px); }
+
+        /* === FOOTER (ENTERPRISE DARK THEME) === */
+        .footer {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-secondary);
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+
+        .footer-logo span {
+            color: var(--dark-accent);
+        }
+
+        .footer-acronym {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-text-white);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-acronym li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-acronym li:not(:last-child)::after {
+            content: "•";
+            color: var(--dark-accent);
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            color: var(--dark-accent);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin-inline: auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748B;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; /* Hide links on mobile for space, usually requires hamburger menu */ }
+            .hero-container { grid-template-columns: 1fr; padding-top: 150px; text-align: center; }
+            .left-content { align-items: center; }
+            .main-title { font-size: 3rem; }
+            .cta-group { justify-content: center; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .mockup-laptop { width: 320px; height: 200px; }
+            .mockup-tablet { width: 140px; height: 190px; left: -10px; }
+            .mockup-mobile { width: 70px; height: 140px; right: 0px; }
+            .main-title { font-size: 2.5rem; }
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseBar {
+            0% { transform: scaleY(0.4); }
+            100% { transform: scaleY(1); }
+        }
+        @keyframes drawLine {
+            0% { stroke-dashoffset: 200; }
+            50% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -200; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html">Modules</a></li>
+            <li><a href="Development-Process-Technology.html">Technology</a></li>
+            <li><a href="why_portofolio.html">Portfolio</a></li>
+            <li><a href="faq-contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- === HERO SECTION === -->
+    <section class="hero-wrapper">
+        <!-- Background Canvas -->
+        <canvas id="networkCanvas"></canvas>
+
+        <div class="hero-container">
+            
+            <!-- LEFT COLUMN: Teks & Button -->
+            <div class="left-content">
+                <div class="subtitle-tag">CUSTOM BUSINESS SOFTWARE</div>
+                <h1 class="main-title">
+                    Designed Around<br>
+                    <span>Your Business</span>
+                </h1>
+                <p class="description">Not The Other Way Around. Discover the ultimate platform to scale your enterprise seamlessly.</p>
+
+                <!-- =========================================================================
+                     HIGHLIGHT SCRIPT: TOMBOL CTA
+                     ========================================================================= -->
+                <div class="cta-group">
+                    <a href="Trusted_Solution.html" class="btn btn-primary">Explore Solutions</a>
+                    <a href="faq-contact.html" class="btn btn-secondary">Book Consultation</a>
+                </div>
+                <!-- ========================================================================= -->
+            </div>
+
+            <!-- RIGHT COLUMN: Animated Mockups -->
+            <div class="right-content">
+                
+                <!-- Laptop -->
+                <div class="mockup-base mockup-laptop">
+                    <div class="laptop-screen">
+                        <div class="dash-header">
+                            <div class="dash-dots"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div>
+                            <div class="live-status"><div class="pulse-node"></div> SAP Cloud</div>
+                        </div>
+                        <div class="dash-body">
+                            <div class="dash-card">
+                                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600;">System Performance</div>
+                                <div class="animated-chart-bars">
+                                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                                </div>
+                            </div>
+                            <div class="dash-card">
+                                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600;">Automation</div>
+                                <svg class="animated-line-svg" viewBox="0 0 100 40">
+                                    <path d="M0 20 Q 25 5, 50 20 T 100 20" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablet -->
+                <div class="mockup-base mockup-tablet">
+                    <div class="tablet-screen">
+                        <div class="dash-header"><div class="live-status"><div class="pulse-node"></div> Active</div></div>
+                        <div class="dash-card" style="height: 100%;">
+                            <div style="font-size: 0.6rem; color: #94a3b8;">Analytics</div>
+                            <div class="animated-chart-bars" style="gap: 3px;">
+                                <div class="bar" style="animation-delay: 0.2s;"></div>
+                                <div class="bar" style="animation-delay: 0.4s;"></div>
+                                <div class="bar" style="animation-delay: 0.1s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div class="mockup-base mockup-mobile">
+                    <div class="mobile-screen">
+                        <div class="dash-header" style="justify-content: center;"><div class="pulse-node"></div></div>
+                        <div class="dash-card" style="height: 100%; justify-content: center; align-items: center;">
+                            <svg class="animated-line-svg" viewBox="0 0 100 40" style="height: 25px;">
+                                <path d="M0 20 Q 25 5, 50 20 T 100 20" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- === FOOTER SECTION === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- === SCRIPTS === -->
+    <script>
+        // --- NAVBAR SCROLL LOGIC ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // --- NETWORK CANVAS LOGIC ---
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        // Atur canvas ke ukuran hero section
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight; // Sama dengan min-height hero-wrapper
+
+        let mouse = { x: null, y: null, radius: (canvas.height / 80) * (canvas.width / 80) };
+
+        window.addEventListener('mousemove', function(event) { mouse.x = event.x; mouse.y = event.y; });
+        window.addEventListener('touchmove', function(event) { mouse.x = event.touches[0].clientX; mouse.y = event.touches[0].clientY; });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.3)'; /* Menggunakan warna Accent Cyan */
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+                if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y; let distance = Math.sqrt(dx*dx + dy*dy);
+                
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) { this.x += 5; }
+                    if (mouse.x > this.x && this.x > this.size * 10) { this.x -= 5; }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) { this.y += 5; }
+                    if (mouse.y > this.y && this.y > this.size * 10) { this.y -= 5; }
+                }
+                this.x += this.directionX; this.y += this.directionY; this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 12000; // Dikurangi agar lebih lega/bersih
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 1) - 0.5;
+                let directionY = (Math.random() * 1) - 0.5;
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, ''));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(226, 232, 240,' + (opacityValue * 0.8) + ')'; /* Warna Border Gray */
+                        ctx.lineWidth = 1; ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
+            connect();
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            mouse.radius = ((innerHeight/80) * (innerWidth/80));
+            init();
+        });
+
+        window.addEventListener('mouseout', function(){ mouse.x = undefined; mouse.y = undefined; });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

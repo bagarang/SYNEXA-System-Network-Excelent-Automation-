@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - Trusted Solutions</title>
+
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES (THEME PALETTE) === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --success-emerald: #10B981;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Executive Section & Footer) */
+            --dark-bg-navy: #020617;
+            --dark-card-slate: #0F172A;
+            --dark-secondary-card: #1E293B;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-primary-cyan: #22D3EE;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background-color: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--accent-cyan); }
+
+        .nav-links {
+            display: flex; gap: 25px; list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary-slate);
+            font-weight: 500; font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* === SECTION 1: INDUSTRIES (PREMIUM LIGHT) === */
+        .industries-section {
+            padding: 150px 5% 100px; /* Top padding for navbar */
+            background: linear-gradient(180deg, var(--card-white) 0%, var(--bg-soft-white) 100%);
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            font-size: 1.15rem;
+            color: var(--secondary-slate);
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-inline: auto;
+            line-height: 1.6;
+        }
+
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .industry-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gray);
+            padding: 30px 20px;
+            border-radius: var(--radius-main);
+            font-weight: 600;
+            color: var(--secondary-slate);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .industry-icon {
+            width: 40px; height: 40px;
+            color: var(--accent-cyan);
+            transition: transform 0.3s ease;
+        }
+
+        .industry-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-soft);
+            border-color: var(--hover-light-blue);
+            color: var(--primary-navy);
+        }
+        .industry-card:hover .industry-icon { transform: scale(1.1); }
+
+        /* === SECTION 2: BUSINESS PROBLEMS (EXECUTIVE DARK) === */
+        .problems-section {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-white);
+            padding: 120px 5%;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid var(--dark-secondary-card);
+        }
+
+        .dark-bg-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px; z-index: 0; opacity: 0.6;
+        }
+
+        .problems-container {
+            position: relative; z-index: 10;
+            max-width: 1300px; margin: 0 auto;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+        }
+
+        /* Left: Problem Cards */
+        .problems-left h2 {
+            font-size: 2.5rem; margin-bottom: 40px;
+            color: var(--dark-text-white); line-height: 1.2; letter-spacing: -1px;
+        }
+        .problems-left h2 span {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+        .problem-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            padding: 24px; border-radius: 16px;
+            display: flex; align-items: center; gap: 16px;
+            font-size: 1rem; font-weight: 500; color: var(--dark-text-secondary);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .problem-card:hover {
+            background: linear-gradient(145deg, rgba(40, 30, 35, 0.8) 0%, rgba(20, 15, 20, 0.9) 100%);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: var(--dark-text-white);
+            transform: translateX(8px);
+        }
+
+        .icon-x { width: 24px; height: 24px; color: #ef4444; flex-shrink: 0; opacity: 0.8; }
+
+        /* Right: Enterprise Workflow Animation */
+        .problems-right { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+        .animation-frame {
+            width: 100%; max-width: 550px; height: 380px;
+            background: var(--dark-card-slate);
+            border-radius: var(--radius-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* State 1: Fragmented Database */
+        .old-workflow {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 30px;
+            display: flex; flex-direction: column; gap: 15px;
+            opacity: 1; animation: fadeOutOld 8s infinite;
+        }
+
+        .data-row { display: flex; gap: 10px; align-items: center; width: 100%; }
+        .data-block { height: 12px; border-radius: 4px; background: var(--dark-secondary-card); }
+        .data-block.error { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); }
+        .data-block.warn { background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); }
+        
+        /* Scanner Transition */
+        .scanner-line {
+            position: absolute; top: -20px; left: -5%; width: 110%; height: 2px;
+            background: var(--dark-accent); box-shadow: 0 0 20px 8px rgba(14, 165, 233, 0.4);
+            z-index: 5; animation: scanEffect 8s infinite cubic-bezier(0.4, 0, 0.2, 1); transform: rotate(-2deg);
+        }
+
+        /* State 2: SYNEXA UI */
+        .new-dashboard {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark-bg-navy); padding: 20px;
+            display: flex; flex-direction: column;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            animation: revealNew 8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .erp-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;
+        }
+
+        .erp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; height: 100%; }
+        .erp-module {
+            background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .erp-line { height: 6px; background: var(--dark-primary-cyan); border-radius: 3px; opacity: 0.8; }
+        .erp-line.light { background: var(--dark-secondary-card); }
+
+        .anim-text {
+            margin-top: 30px; font-size: 1rem; color: var(--dark-text-secondary);
+            font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        /* CTA SECTION */
+        .cta-container { text-align: center; margin-top: 80px; position: relative; z-index: 10; }
+        .btn-action {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 18px 45px; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;
+            background: transparent; color: var(--dark-accent);
+            border: 2px solid var(--dark-primary-cyan); border-radius: 50px;
+            text-decoration: none; transition: all 0.3s ease;
+        }
+        .btn-action:hover {
+            background: rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* === FOOTER (ENTERPRISE DARK THEME) === */
+        .footer {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-secondary);
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+
+        .footer-logo span {
+            color: var(--dark-accent);
+        }
+
+        .footer-acronym {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-text-white);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-acronym li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-acronym li:not(:last-child)::after {
+            content: "•";
+            color: var(--dark-accent);
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            color: var(--dark-accent);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin-inline: auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-slate);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .problems-container { grid-template-columns: 1fr; gap: 50px; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .industry-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .industry-card { padding: 20px 10px; }
+            .problems-left h2 { font-size: 2rem; text-align: center; }
+            .section-title { font-size: 2.2rem; }
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes scanEffect {
+            0%, 30% { top: -20px; opacity: 0; }
+            35% { opacity: 1; top: -20px; }
+            45% { top: 120%; opacity: 1; }
+            50%, 100% { top: 120%; opacity: 0; }
+        }
+        @keyframes fadeOutOld { 0%, 40% { opacity: 1; } 45%, 100% { opacity: 0; } }
+        @keyframes revealNew {
+            0%, 35% { clip-path: polygon(0 -20%, 120% -20%, 120% -20%, 0 -20%); }
+            45%, 90% { clip-path: polygon(0 -20%, 120% -20%, 120% 120%, 0 120%); opacity: 1; }
+            95%, 100% { opacity: 0; }
+        }
+        .status-label::before { content: "Fragmented Data"; color: #f87171; animation: textSwap 8s infinite; }
+        @keyframes textSwap {
+            0%, 40% { content: "Fragmented Data"; color: #f87171; }
+            45%, 95% { content: "Unified Systems"; color: var(--dark-accent); }
+            100% { content: "Fragmented Data"; color: #f87171; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html" style="color:var(--accent-cyan);">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html">Modules</a></li>
+            <li><a href="Development-Process-Technology.html">Technology</a></li>
+            <li><a href="why_portofolio.html">Portfolio</a></li>
+            <li><a href="faq-contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- === SECTION 1: INDUSTRIES (LIGHT) === -->
+    <section class="industries-section">
+        <h2 class="section-title">Empowering Every Industry</h2>
+        <p class="section-subtitle">Scalable SAP solutions designed for your specific business sector.</p>
+        
+        <div class="industry-grid">
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path></svg>
+                Retail
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"></path></svg>
+                Distribution
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"></path></svg>
+                Warehouse
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Manufacturing
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6"></path></svg>
+                Healthcare
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"></path></svg>
+                Education
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"></path></svg>
+                Construction
+            </div>
+            <div class="industry-card">
+                <svg class="industry-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"></path></svg>
+                Service
+            </div>
+        </div>
+    </section>
+
+    <!-- === SECTION 2: BUSINESS PROBLEMS (DARK) === -->
+    <section class="problems-section">
+        <div class="dark-bg-grid"></div>
+        <div class="problems-container">
+            <div class="problems-left">
+                <h2>Leave <span>Business Problems</span><br>In The Past.</h2>
+                <div class="cards-grid">
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Double Input</div>
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Stock Missing</div>
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Manual Approval</div>
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Slow Reporting</div>
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Difficult Monitoring</div>
+                    <div class="problem-card"><svg class="icon-x" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Human Error</div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Animation -->
+            <div class="problems-right">
+                <div class="animation-frame">
+                    <div class="old-workflow">
+                        <div style="color: var(--dark-text-secondary); font-size: 0.75rem; letter-spacing: 1px;">UNSTRUCTURED PROCESSING...</div>
+                        <div class="data-row" style="margin-top: 10px;"><div class="data-block" style="width: 20%;"></div><div class="data-block" style="width: 60%;"></div></div>
+                        <div class="data-row"><div class="data-block" style="width: 40%;"></div><div class="data-block error" style="width: 30%;"></div><span style="color:#ef4444; font-size:10px; font-weight:bold;">SYNC FAILED</span></div>
+                        <div class="data-row"><div class="data-block warn" style="width: 50%;"></div><span style="color:#f59e0b; font-size:10px; font-weight:bold;">DUPLICATE KEY</span></div>
+                        <div class="data-row" style="margin-top: 15px;"><div class="data-block" style="width: 70%;"></div></div>
+                    </div>
+                    <div class="scanner-line"></div>
+                    <div class="new-dashboard">
+                        <div class="erp-header">
+                            <span style="color: var(--dark-accent); font-weight: 700; font-size: 1.1rem; letter-spacing: 1px;">SYNEXA CORE</span>
+                            <span style="color: var(--success-emerald); font-size: 0.7rem; font-weight: bold; border: 1px solid rgba(16,185,129,0.3); padding: 4px 8px; border-radius: 4px;">● LIVE & SECURE</span>
+                        </div>
+                        <div class="erp-grid">
+                            <div class="erp-module"><span style="font-size:0.65rem; color:var(--dark-text-secondary); font-weight:600;">Data Integration</span><div class="erp-line" style="width: 100%;"></div><div class="erp-line" style="width: 70%;"></div></div>
+                            <div class="erp-module"><span style="font-size:0.65rem; color:var(--dark-text-secondary); font-weight:600;">Automation</span><div class="erp-line" style="width: 80%; background:var(--success-emerald);"></div><div class="erp-line" style="width: 90%; background:var(--success-emerald);"></div></div>
+                            <div class="erp-module"><span style="font-size:0.65rem; color:var(--dark-text-secondary); font-weight:600;">System Log</span><div class="erp-line light" style="width: 100%;"></div><div class="erp-line light" style="width: 50%;"></div></div>
+                            <div class="erp-module" style="grid-column: span 3;"><span style="font-size:0.65rem; color:var(--dark-text-secondary); font-weight:600;">Analytics Mapping</span>
+                                <div style="display:flex; gap:10px; margin-top:5px; height:100%; align-items:flex-end;">
+                                    <div style="width:20px; height:40%; background:var(--dark-accent); border-radius:2px;"></div>
+                                    <div style="width:20px; height:70%; background:var(--dark-accent); border-radius:2px;"></div>
+                                    <div style="width:20px; height:50%; background:var(--dark-accent); border-radius:2px;"></div>
+                                    <div style="width:20px; height:90%; background:var(--dark-accent); border-radius:2px;"></div>
+                                    <div style="width:20px; height:100%; background:var(--dark-accent); border-radius:2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="anim-text">SYSTEM STATUS: <span class="status-label"></span></div>
+            </div>
+        </div>
+
+        <!-- =========================================================================
+             HIGHLIGHT SCRIPT: TOMBOL REFERENSI / CALL TO ACTION (CTA)
+             ========================================================================= -->
+        <div class="cta-container">
+            <a href="Our_Solutions.html" class="btn-action">Discover How We Solve It</a>
+        </div>
+        <!-- ========================================================================= -->
+    </section>
+
+    <!-- === FOOTER SECTION === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- === SCRIPT === -->
+    <script>
+        // Navbar Scroll Logic
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - FAQ & Contact</title>
+
+    <!-- Import Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --success-emerald: #10B981;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Footer & Contact Section) */
+            --dark-bg-navy: #020617;
+            --dark-card-slate: #0F172A;
+            --dark-secondary-card: #1E293B;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-primary-cyan: #22D3EE;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--accent-cyan); }
+
+        .nav-links { display: flex; gap: 22px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--secondary-slate);
+            font-weight: 500; font-size: 0.92rem; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* === SECTION 1: FAQ (ACCORDION) === */
+        .faq-section {
+            width: 100%;
+            padding: 150px 5% 100px; /* Offset for navbar */
+            background: var(--card-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .faq-header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 60px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .subtitle-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .main-title span {
+            color: var(--accent-cyan);
+        }
+
+        /* Accordion Container */
+        .faq-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeInGrid 1s ease-out 0.4s forwards;
+        }
+
+        /* Accordion Item */
+        .faq-item {
+            background: var(--card-white);
+            border: 1px solid var(--border-gray);
+            border-radius: var(--radius-main);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+        }
+
+        .faq-item.active {
+            border-color: var(--hover-light-blue);
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.1);
+        }
+
+        /* Accordion Question (Clickable) */
+        .faq-question {
+            width: 100%;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--accent-cyan);
+        }
+
+        .faq-item.active .faq-question {
+            color: var(--accent-cyan);
+        }
+
+        /* Accordion Icon (+ / -) */
+        .faq-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--bg-soft-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-slate);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-icon {
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            transform: rotate(45deg);
+        }
+
+        /* Accordion Answer */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--bg-soft-white);
+        }
+
+        .faq-answer-content {
+            padding: 0 30px 30px 30px;
+            font-size: 1.05rem;
+            color: var(--secondary-slate);
+            line-height: 1.6;
+        }
+
+        /* === SECTION 2: CONTACT (DARK / GRAND CTA) === */
+        .contact-section {
+            width: 100%;
+            padding: 120px 5%;
+            background: var(--dark-bg-navy);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-bg-pattern {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        .contact-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .contact-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 50px;
+        }
+
+        .contact-title span {
+            background: linear-gradient(135deg, var(--dark-accent) 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Buttons Group */
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 45px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* WA Button */
+        .btn-wa {
+            background: #10b981;
+            color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-wa:hover {
+            background: #059669;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Email Button */
+        .btn-email {
+            background: transparent;
+            color: var(--dark-text-secondary);
+            border: 2px solid var(--dark-secondary-card);
+        }
+
+        .btn-email:hover {
+            background: var(--dark-secondary-card);
+            border-color: var(--dark-primary-cyan);
+            color: var(--dark-primary-cyan);
+            transform: translateY(-3px);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-secondary);
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+
+        .footer-logo span {
+            color: var(--dark-accent);
+        }
+
+        .footer-acronym {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-text-white);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-acronym li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-acronym li:not(:last-child)::after {
+            content: "•";
+            color: var(--dark-accent);
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            color: var(--dark-accent);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin-inline: auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-slate);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+        }
+
+        @media (max-width: 900px) {
+            .contact-title { font-size: 3.5rem; }
+            .main-title { font-size: 3rem; }
+        }
+
+        @media (max-width: 600px) {
+            .faq-section { padding: 120px 5% 80px; }
+            .main-title { font-size: 2.2rem; }
+            .faq-question { padding: 20px; font-size: 1.05rem; }
+            .faq-answer-content { padding: 0 20px 20px 20px; font-size: 0.95rem; }
+            
+            .contact-section { padding: 100px 5%; }
+            .contact-title { font-size: 2.5rem; }
+            .contact-buttons { flex-direction: column; width: 100%; }
+            .btn { width: 100%; padding: 16px 20px; }
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInGrid {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html">Modules</a></li>
+            <li><a href="Development-Process-Technology.html">Technology</a></li>
+            <li><a href="why_portofolio.html">Portfolio</a></li>
+            <li><a href="faq-contact.html" style="color:var(--accent-cyan);">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- === SECTION 1: FAQ (ACCORDION) === -->
+    <section class="faq-section">
+        
+        <div class="faq-header">
+            <div class="subtitle-tag">Got Questions?</div>
+            <h1 class="main-title">Frequently Asked <span>Questions</span></h1>
+        </div>
+
+        <div class="faq-container">
+            
+            <!-- Item 1 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Berapa lama proses implementasi sistem SYNEXA?
+                    <div class="faq-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Waktu implementasi sangat bergantung pada skala bisnis dan kompleksitas modul yang dipilih. Untuk skala standar, rata-rata membutuhkan waktu 4 hingga 8 minggu, mencakup fase discovery, development, hingga proses training karyawan Anda.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Apakah SYNEXA bisa diintegrasikan dengan aplikasi lain (API)?
+                    <div class="faq-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Tentu saja. Ekosistem kami dibangun menggunakan arsitektur RESTful API modern yang sangat fleksibel. Kami dapat menghubungkan sistem SYNEXA dengan platform pihak ketiga seperti payment gateway, e-commerce, hingga sistem HRIS yang sudah Anda gunakan sebelumnya.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Apakah data perusahaan saya aman di cloud?
+                    <div class="faq-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Keamanan adalah prioritas utama kami. SYNEXA menggunakan protokol enkripsi end-to-end, sertifikat SSL standar industri, dan pencadangan data otomatis (auto-backup) secara berkala di server cloud yang tersertifikasi.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Bagaimana jika kami memiliki alur kerja (workflow) yang sangat unik?
+                    <div class="faq-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Kekuatan utama SYNEXA adalah 'Custom Development'. Sistem kami tidak bersifat kaku. Tim Business Analyst kami akan memetakan proses bisnis Anda dan menyesuaikan (customize) seluruh modul agar 100% cocok dengan workflow internal Anda.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Apakah ada dukungan teknis (support) setelah aplikasi berjalan?
+                    <div class="faq-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Ya, kami menyediakan paket Long-Term Support yang mencakup pemeliharaan server, perbaikan bug (jika ada), pembaruan sistem berkala, dan tim helpdesk yang siap merespon pertanyaan atau kendala dari tim Anda.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- === SECTION 2: CONTACT (GRAND CTA) === -->
+    <section class="contact-section">
+        <div class="dark-bg-pattern"></div>
+        
+        <div class="contact-content">
+            <h2 class="contact-title">Let's Build<br><span>Something Great</span><br>Together.</h2>
+            
+            <div class="contact-buttons">
+                <!-- =========================================================================
+                     HIGHLIGHT SCRIPT: TOMBOL WHATSAPP
+                     ========================================================================= -->
+                <a href="https://wa.me/6281311893500" target="_blank" class="btn btn-wa">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Book Now
+                </a>
+                <!-- ========================================================================= -->
+
+                <!-- =========================================================================
+                     HIGHLIGHT SCRIPT: TOMBOL EMAIL
+                     ========================================================================= -->
+                <a href="mailto:thereza.hasny@gmail.com" class="btn btn-email">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"></path></svg>
+                    Send an Email
+                </a>
+                <!-- ========================================================================= -->
+            </div>
+        </div>
+    </section>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- === SCRIPTS === -->
+    <script>
+        // Navbar Scroll Logic
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Accordion Logic
+        const faqs = document.querySelectorAll('.faq-item');
+
+        faqs.forEach(faq => {
+            const question = faq.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                const activeFaq = document.querySelector('.faq-item.active');
+                
+                if (activeFaq && activeFaq !== faq) {
+                    activeFaq.classList.remove('active');
+                    activeFaq.querySelector('.faq-answer').style.maxHeight = null;
+                }
+                
+                faq.classList.toggle('active');
+                const answer = faq.querySelector('.faq-answer');
+                
+                if (faq.classList.contains('active')) {
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                } else {
+                    answer.style.maxHeight = null;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - Product Modules</title>
+
+    <!-- Import Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --success-emerald: #10B981;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Footer) */
+            --dark-bg-navy: #020617;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--accent-cyan); }
+
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--secondary-slate);
+            font-weight: 500; font-size: 0.9rem; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* === MAIN CONTAINER === */
+        .modules-section {
+            width: 100%;
+            min-height: 100vh;
+            padding: 150px 5% 100px; /* Offset for navbar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: radial-gradient(circle at top center, var(--card-white) 0%, var(--bg-soft-white) 100%);
+        }
+
+        .header-content {
+            text-align: center;
+            max-width: 900px;
+            margin-bottom: 60px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .main-title span {
+            color: var(--accent-cyan);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-slate);
+            line-height: 1.6;
+        }
+
+        /* === GRID 4 KOLOM === */
+        .modules-grid {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            opacity: 0;
+            animation: fadeInGrid 1s ease-out 0.4s forwards;
+        }
+
+        /* === MODULE CARDS === */
+        .module-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gray);
+            border-radius: var(--radius-main);
+            padding: 35px 25px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -10px rgba(15, 23, 42, 0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .icon-circle {
+            width: 65px;
+            height: 65px;
+            background: var(--bg-soft-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+            transition: all 0.4s ease;
+            margin-bottom: 10px;
+        }
+
+        .icon-circle svg {
+            width: 32px;
+            height: 32px;
+            stroke-width: 1.5;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Hover Effects */
+        .module-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--hover-light-blue);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-card:hover .icon-circle {
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            transform: scale(1.1);
+        }
+
+        /* === POPUP / MODAL STYLES === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-white);
+            width: 90%;
+            max-width: 600px;
+            border-radius: var(--radius-main);
+            padding: 40px;
+            position: relative;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: var(--bg-soft-white);
+            border: none;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--secondary-slate);
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .modal-icon {
+            width: 80px; height: 80px;
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent-cyan);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        .modal-icon svg { width: 40px; height: 40px; }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 15px;
+        }
+
+        .modal-desc {
+            font-size: 1.05rem;
+            color: var(--secondary-slate);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn-modal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 35px;
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 20px -5px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-modal:hover {
+            background: #0891b2;
+            transform: translateY(-2px);
+        }
+
+        /* === CTA SECTION (BOTTOM) === */
+        .cta-container {
+            margin-top: 60px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: var(--accent-cyan);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(6, 182, 212, 0.3);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-secondary);
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 100px;
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+
+        .footer-logo span {
+            color: var(--dark-accent);
+        }
+
+        .footer-acronym {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-text-white);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-acronym li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-acronym li:not(:last-child)::after {
+            content: "•";
+            color: var(--dark-accent);
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            color: var(--dark-accent);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin-inline: auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-slate);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1200px) {
+            .modules-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+        }
+        @media (max-width: 900px) {
+            .modules-grid { grid-template-columns: repeat(2, 1fr); }
+            .main-title { font-size: 2.8rem; }
+        }
+        @media (max-width: 600px) {
+            .modules-grid { grid-template-columns: 1fr; }
+            .modules-section { padding: 120px 5% 60px; }
+            .main-title { font-size: 2.2rem; }
+            .modal-content { padding: 30px 20px; }
+            .modal-title { font-size: 1.6rem; }
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInGrid {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html" style="color:var(--accent-cyan);">Modules</a></li>
+            <li><a href="Development-Process-Technology.html">Technology</a></li>
+            <li><a href="why_portofolio.html">Portfolio</a></li>
+            <li><a href="faq-contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="modules-section">
+        
+        <div class="header-content">
+            <h1 class="main-title">The Complete <span>SYNEXA</span> Suite</h1>
+            <p class="subtitle">16 enterprise-grade modules designed to seamlessly integrate every aspect of your business operations in one powerful ecosystem.</p>
+        </div>
+
+        <!-- 4 COLUMN GRID -->
+        <div class="modules-grid">
+            
+            <!-- 1. Dashboard -->
+            <div class="module-card" data-module="Dashboard">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path></svg></div>
+                <h3 class="card-title">Dashboard</h3>
+            </div>
+
+            <!-- 2. CRM -->
+            <div class="module-card" data-module="CRM">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg></div>
+                <h3 class="card-title">CRM</h3>
+            </div>
+
+            <!-- 3. Sales -->
+            <div class="module-card" data-module="Sales">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                <h3 class="card-title">Sales</h3>
+            </div>
+
+            <!-- 4. Purchase -->
+            <div class="module-card" data-module="Purchase">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"></path></svg></div>
+                <h3 class="card-title">Purchase</h3>
+            </div>
+
+            <!-- 5. Inventory -->
+            <div class="module-card" data-module="Inventory">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"></path></svg></div>
+                <h3 class="card-title">Inventory</h3>
+            </div>
+
+            <!-- 6. Warehouse -->
+            <div class="module-card" data-module="Warehouse">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m8.25-3v-6.5a2.25 2.25 0 00-.659-1.591l-7.5-7.5a2.25 2.25 0 00-3.182 0l-7.5 7.5a2.25 2.25 0 00-.659 1.591v6.5a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25z"></path></svg></div>
+                <h3 class="card-title">Warehouse</h3>
+            </div>
+
+            <!-- 7. Accounting -->
+            <div class="module-card" data-module="Accounting">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path></svg></div>
+                <h3 class="card-title">Accounting</h3>
+            </div>
+
+            <!-- 8. Assets -->
+            <div class="module-card" data-module="Assets">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25"></path></svg></div>
+                <h3 class="card-title">Assets</h3>
+            </div>
+
+            <!-- 9. HR -->
+            <div class="module-card" data-module="HR">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"></path></svg></div>
+                <h3 class="card-title">HR</h3>
+            </div>
+
+            <!-- 10. Payroll -->
+            <div class="module-card" data-module="Payroll">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"></path></svg></div>
+                <h3 class="card-title">Payroll</h3>
+            </div>
+
+            <!-- 11. Projects -->
+            <div class="module-card" data-module="Projects">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path></svg></div>
+                <h3 class="card-title">Projects</h3>
+            </div>
+
+            <!-- 12. Production -->
+            <div class="module-card" data-module="Production">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"></path></svg></div>
+                <h3 class="card-title">Production</h3>
+            </div>
+
+            <!-- 13. Approval -->
+            <div class="module-card" data-module="Approval">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043A3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043A3.746 3.746 0 0121 12z"></path></svg></div>
+                <h3 class="card-title">Approval</h3>
+            </div>
+
+            <!-- 14. Analytics -->
+            <div class="module-card" data-module="Analytics">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"></path></svg></div>
+                <h3 class="card-title">Analytics</h3>
+            </div>
+
+            <!-- 15. Settings -->
+            <div class="module-card" data-module="Settings">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0 .55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>
+                <h3 class="card-title">Settings</h3>
+            </div>
+
+            <!-- 16. API Integration -->
+            <div class="module-card" data-module="API Integration">
+                <div class="icon-circle"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path></svg></div>
+                <h3 class="card-title">API Integration</h3>
+            </div>
+
+        </div>
+
+        <!-- =========================================================================
+             HIGHLIGHT SCRIPT: TOMBOL REFERENSI / CALL TO ACTION (CTA)
+             ========================================================================= -->
+        <div class="cta-container">
+            <a href="faq-contact.html" class="btn-outline">Request Custom Module Demo</a>
+        </div>
+        <!-- ========================================================================= -->
+
+    </section>
+
+    <!-- === POPUP / MODAL ELEMENT === -->
+    <div class="modal-overlay" id="moduleModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">✕</button>
+            <div class="modal-icon" id="modalIcon"></div>
+            <h2 class="modal-title" id="modalTitle">Module Name</h2>
+            <p class="modal-desc" id="modalDesc"></p>
+            <a href="faq-contact.html" class="btn-modal">Explore This Module</a>
+        </div>
+    </div>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        // Navbar Scroll Logic
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Popup / Modal Logic
+        const cards = document.querySelectorAll('.module-card');
+        const modal = document.getElementById('moduleModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalDesc = document.getElementById('modalDesc');
+
+        const moduleDescriptions = {
+            "Dashboard": "Dapatkan ringkasan metrik real-time dan KPI perusahaan Anda dalam satu layar terpusat untuk pengambilan keputusan yang cepat dan tepat.",
+            "CRM": "Kelola data pelanggan, pantau riwayat interaksi, dan tingkatkan retensi klien dengan otomatisasi alur kerja CRM tingkat lanjut.",
+            "Sales": "Optimalkan seluruh pipeline penjualan, mulai dari prospek hingga penagihan, dengan sistem pelacakan otomatis dan prediksi konversi.",
+            "Purchase": "Sederhanakan proses pengadaan barang (procurement), evaluasi vendor, dan lacak seluruh tagihan pembelian tanpa ada data yang terlewat.",
+            "Inventory": "Pantau pergerakan stok secara real-time, cegah kekurangan barang, dan jalankan stock opname otomatis di berbagai lokasi gudang.",
+            "Warehouse": "Sistem tata letak gudang pintar yang memetakan lokasi barang secara akurat untuk efisiensi picking, packing, dan shipping.",
+            "Accounting": "Terintegrasi penuh untuk mengotomatiskan entri jurnal, mengelola arus kas, dan menghasilkan laporan keuangan standar perusahaan.",
+            "Assets": "Lacak penyusutan, jadwal pemeliharaan, dan siklus hidup seluruh aset tetap perusahaan Anda dalam satu sistem yang rapi.",
+            "HR": "Fokus pada pengembangan SDM dengan otomatisasi data kehadiran, cuti, evaluasi kinerja, hingga manajemen rekrutmen karyawan.",
+            "Payroll": "Hitung gaji, pajak (PPh 21), BPJS, dan tunjangan secara instan dan akurat tanpa perlu pengerjaan manual yang rawan error.",
+            "Projects": "Pantau tenggat waktu, alokasi sumber daya, dan anggaran proyek menggunakan papan Kanban kolaboratif interaktif.",
+            "Production": "Jalankan skenario Bill of Materials (BoM), jadwalkan mesin produksi, dan kalkulasi HPP secara otomatis dalam lantai pabrik.",
+            "Approval": "Sistem otorisasi berjenjang (multi-level) yang aman dan paperless untuk mempercepat setiap persetujuan dokumen penting.",
+            "Analytics": "Ubah raw data menjadi wawasan bisnis menggunakan visualisasi grafik cerdas dan algoritma prediksi tren masa depan.",
+            "Settings": "Konfigurasi kustomisasi tingkat lanjut untuk hak akses pengguna (Role Based Access Control) dan penyesuaian regulasi internal.",
+            "API Integration": "Hubungkan SYNEXA dengan mulus ke platform pihak ketiga favorit Anda (seperti Bank, e-Commerce, atau Logistik) via RESTful API."
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const moduleName = card.getAttribute('data-module');
+                const svgContent = card.querySelector('.icon-circle').innerHTML;
+                
+                modalTitle.textContent = moduleName;
+                modalIcon.innerHTML = svgContent;
+                modalDesc.textContent = moduleDescriptions[moduleName] || "Deskripsi modul sedang dalam penyesuaian sistem.";
+                
+                modal.classList.add('active');
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+```[cite: 10]

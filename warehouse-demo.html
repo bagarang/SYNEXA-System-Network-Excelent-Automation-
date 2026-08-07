@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUDANG.OS — Warehouse Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161d;
+    --surface:#1b212b;
+    --surface-2:#232b37;
+    --border:#2c3542;
+    --text:#e8ebf0;
+    --text-dim:#8b95a5;
+    --text-faint:#5b6472;
+    --amber:#ffb020;
+    --amber-dim:#4a3a18;
+    --green:#3dd68c;
+    --green-dim:#173428;
+    --red:#ff5c5c;
+    --red-dim:#3a1c1c;
+    --blue:#4c9fff;
+    --font-display:'Oswald',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+    --radius:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    min-height:100vh;
+  }
+  ::selection{background:var(--amber);color:#12161d;}
+
+  /* hazard stripe accent */
+  .hazard{
+    height:4px;
+    width:100%;
+    background:repeating-linear-gradient(135deg,var(--amber) 0 10px,#12161d 10px 20px);
+    opacity:.9;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    width:230px;
+    flex-shrink:0;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .brand{
+    padding:22px 20px 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand-mark{
+    width:34px;height:34px;border-radius:6px;
+    background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:20px;height:20px;stroke:#12161d;}
+  .brand-text .title{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:.5px;line-height:1;}
+  .brand-text .sub{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:1px;margin-top:3px;}
+
+  nav{padding:16px 12px;flex:1;}
+  .nav-label{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px 8px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:6px;
+    color:var(--text-dim);font-size:13.5px;font-weight:500;
+    cursor:pointer;margin-bottom:2px;
+    border-left:2px solid transparent;
+    transition:background .12s, color .12s;
+  }
+  .nav-item svg{width:16px;height:16px;flex-shrink:0;stroke:currentColor;}
+  .nav-item:hover{background:var(--surface-2);color:var(--text);}
+  .nav-item.active{background:var(--surface-2);color:var(--amber);border-left-color:var(--amber);}
+
+  .sidebar-foot{
+    padding:14px 20px 18px;border-top:1px solid var(--border);
+    font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);
+  }
+  .sidebar-foot b{color:var(--text-dim);}
+
+  /* ---------- MAIN ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  header.topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:18px 28px;border-bottom:1px solid var(--border);
+    background:var(--bg);position:sticky;top:0;z-index:20;
+  }
+  .page-heading .eyebrow{font-family:var(--font-mono);font-size:10.5px;color:var(--amber);letter-spacing:1.5px;text-transform:uppercase;}
+  .page-heading h1{font-family:var(--font-display);font-size:22px;font-weight:600;margin-top:2px;}
+  .topbar-actions{display:flex;align-items:center;gap:10px;}
+  .search-box{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--border);
+    padding:8px 12px;border-radius:6px;width:260px;
+  }
+  .search-box svg{width:15px;height:15px;stroke:var(--text-faint);flex-shrink:0;}
+  .search-box input{
+    background:none;border:none;outline:none;color:var(--text);
+    font-size:13px;font-family:var(--font-body);width:100%;
+  }
+  .search-box input::placeholder{color:var(--text-faint);}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--font-body);font-weight:600;font-size:13px;
+    padding:9px 15px;border-radius:6px;border:1px solid transparent;
+    cursor:pointer;transition:transform .08s, filter .12s;white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn svg{width:14px;height:14px;}
+  .btn-primary{background:var(--amber);color:#1a1305;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border-color:var(--border);}
+  .btn-ghost:hover{background:#2a3341;}
+  .btn-danger{background:var(--red-dim);color:var(--red);border-color:#4a2424;}
+  .btn-danger:hover{background:#4a2424;}
+  .btn-sm{padding:6px 10px;font-size:12px;}
+  .btn-icon{padding:7px;}
+
+  .content{padding:24px 28px 60px;overflow-y:auto;}
+
+  /* ---------- STAT CARDS ---------- */
+  .stat-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
+  }
+  .stat-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;position:relative;overflow:hidden;
+  }
+  .stat-card .stat-label{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);letter-spacing:1px;text-transform:uppercase;}
+  .stat-card .stat-value{font-family:var(--font-display);font-size:30px;font-weight:600;margin-top:6px;}
+  .stat-card .stat-sub{font-size:11.5px;color:var(--text-dim);margin-top:4px;}
+  .stat-card.warn .stat-value{color:var(--amber);}
+  .stat-card.danger .stat-value{color:var(--red);}
+  .stat-card.good .stat-value{color:var(--green);}
+  .stat-card::after{
+    content:'';position:absolute;right:-10px;bottom:-10px;width:70px;height:70px;
+    border-radius:50%;background:radial-gradient(circle,rgba(255,176,32,.08),transparent 70%);
+  }
+
+  /* ---------- PANELS / LAYOUT ---------- */
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;}
+  .panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;border-bottom:1px solid var(--border);
+  }
+  .panel-head h2{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:.3px;}
+  .panel-head .count-pill{
+    font-family:var(--font-mono);font-size:10.5px;color:var(--text-dim);
+    background:var(--surface-2);padding:3px 8px;border-radius:20px;
+  }
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:left;padding:10px 18px;font-family:var(--font-mono);font-size:10px;
+    color:var(--text-faint);letter-spacing:1px;text-transform:uppercase;
+    border-bottom:1px solid var(--border);background:var(--surface-2);
+  }
+  tbody td{padding:12px 18px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(255,255,255,.015);}
+  .sku{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);}
+  .item-name{font-weight:600;font-size:13.5px;}
+  .item-loc{font-size:11.5px;color:var(--text-faint);margin-top:2px;font-family:var(--font-mono);}
+  .cat-tag{
+    font-size:11px;padding:3px 8px;border-radius:20px;background:var(--surface-2);
+    color:var(--text-dim);white-space:nowrap;border:1px solid var(--border);
+  }
+
+  /* signature element: rack gauge */
+  .rack-gauge{display:flex;align-items:center;gap:10px;}
+  .rack-gauge .qty-text{font-family:var(--font-mono);font-size:13px;font-weight:600;min-width:60px;}
+  .rack-gauge .qty-unit{color:var(--text-faint);font-weight:400;font-size:11px;}
+  .rack-bins{display:flex;gap:2px;align-items:flex-end;height:20px;}
+  .rack-bin{width:5px;border-radius:1px;background:var(--surface-2);border:1px solid var(--border);}
+  .rack-bin.on.ok{background:var(--green);border-color:var(--green);}
+  .rack-bin.on.warn{background:var(--amber);border-color:var(--amber);}
+  .rack-bin.on.crit{background:var(--red);border-color:var(--red);}
+
+  .status-pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px;
+  }
+  .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;}
+  .status-pill.ok{background:var(--green-dim);color:var(--green);}
+  .status-pill.ok::before{background:var(--green);}
+  .status-pill.warn{background:var(--amber-dim);color:var(--amber);}
+  .status-pill.warn::before{background:var(--amber);}
+  .status-pill.crit{background:var(--red-dim);color:var(--red);}
+  .status-pill.crit::before{background:var(--red);}
+
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;}
+  .icon-btn{
+    width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+    background:var(--surface-2);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background .12s,border-color .12s;
+  }
+  .icon-btn svg{width:14px;height:14px;stroke:var(--text-dim);}
+  .icon-btn:hover{background:#2a3341;border-color:#3a4553;}
+  .icon-btn.in:hover svg{stroke:var(--green);}
+  .icon-btn.out:hover svg{stroke:var(--amber);}
+  .icon-btn.del:hover svg{stroke:var(--red);}
+  .icon-btn.del:hover{border-color:#4a2424;background:var(--red-dim);}
+
+  .empty-row td{padding:40px 18px;text-align:center;color:var(--text-faint);font-size:13px;}
+
+  /* ---------- TRANSACTION LOG (manifest board) ---------- */
+  .manifest{padding:6px 0;max-height:560px;overflow-y:auto;}
+  .manifest-item{
+    padding:12px 18px;border-bottom:1px solid var(--border);
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .manifest-item:last-child{border-bottom:none;}
+  .manifest-top{display:flex;justify-content:space-between;align-items:center;}
+  .manifest-tag{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:.5px;
+    padding:2px 7px;border-radius:4px;font-weight:600;
+  }
+  .manifest-tag.masuk{background:var(--green-dim);color:var(--green);}
+  .manifest-tag.keluar{background:var(--amber-dim);color:var(--amber);}
+  .manifest-time{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);}
+  .manifest-name{font-size:13px;font-weight:600;}
+  .manifest-note{font-size:11.5px;color:var(--text-dim);}
+  .manifest-empty{padding:40px 18px;text-align:center;color:var(--text-faint);font-size:12.5px;}
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(8,10,14,.65);
+    display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    width:420px;max-width:100%;overflow:hidden;
+    animation:pop .14s ease;
+  }
+  @keyframes pop{from{transform:scale(.97);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal-head{
+    padding:16px 20px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .modal-head h3{font-family:var(--font-display);font-size:16px;font-weight:600;}
+  .modal-close{cursor:pointer;color:var(--text-faint);font-size:20px;line-height:1;background:none;border:none;}
+  .modal-close:hover{color:var(--text);}
+  .modal-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;}
+  .field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+  .field input,.field select,.field textarea{
+    width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    padding:9px 11px;color:var(--text);font-size:13.5px;font-family:var(--font-body);outline:none;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber);}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .modal-foot{padding:14px 20px 18px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border);}
+  .modal-hint{font-size:12px;color:var(--text-faint);}
+  .stock-context{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:6px;
+    padding:10px 12px;font-size:12.5px;color:var(--text-dim);
+  }
+  .stock-context b{color:var(--text);}
+
+  /* ---------- TOAST ---------- */
+  .toast-wrap{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:8px;z-index:200;}
+  .toast{
+    background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--green);
+    padding:11px 16px;border-radius:6px;font-size:13px;min-width:230px;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    animation:slidein .18s ease;
+  }
+  .toast.warn{border-left-color:var(--amber);}
+  .toast.danger{border-left-color:var(--red);}
+  @keyframes slidein{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+  /* focus visibility */
+  button:focus-visible, input:focus-visible, select:focus-visible, .nav-item:focus-visible{
+    outline:2px solid var(--amber);outline-offset:2px;
+  }
+
+  /* ---------- BACK-TO-PORTFOLIO BUTTON ---------- */
+  .back-nav{
+    position:fixed;top:12px;left:12px;z-index:300;
+  }
+  .back-nav a{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text-dim);text-decoration:none;
+    font-family:var(--font-body);font-weight:600;font-size:12.5px;
+    padding:7px 12px 7px 9px;border-radius:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,.35);
+    transition:background .12s,color .12s,border-color .12s,transform .08s;
+  }
+  .back-nav a svg{width:14px;height:14px;stroke:currentColor;flex-shrink:0;}
+  .back-nav a:hover{background:var(--surface);color:var(--amber);border-color:#3a4553;}
+  .back-nav a:active{transform:translateY(1px);}
+
+  @media(max-width:980px){
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+    .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .2s;z-index:150;}
+    .sidebar.open{transform:translateX(0);}
+    .search-box{width:170px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="why_portofolio.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Kembali
+  </a>
+</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+    </div>
+    <div class="brand-text">
+      <div class="title">GUDANG.OS</div>
+      <div class="sub">WAREHOUSE MODULE</div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-label">Menu</div>
+    <div class="nav-item active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-view="inventory">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><path d="M3 8h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><path d="M9 12h6"/></svg>
+      Inventaris
+    </div>
+    <div class="nav-item" data-view="transactions">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/><circle cx="19" cy="17" r="2"/></svg>
+      Riwayat Transaksi
+    </div>
+    <div class="nav-label" style="margin-top:14px;">Laporan</div>
+    <div class="nav-item" data-view="lowstock">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      Stok Menipis
+    </div>
+  </nav>
+  <div class="sidebar-foot">
+    Login sebagai <b>Admin Gudang</b><br>Shift Pagi · Gudang Pusat
+  </div>
+</aside>
+
+<div class="main">
+  <div class="hazard"></div>
+  <header class="topbar">
+    <div class="page-heading">
+      <div class="eyebrow" id="pageEyebrow">RINGKASAN OPERASIONAL</div>
+      <h1 id="pageTitle">Dashboard Gudang</h1>
+    </div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari SKU atau nama barang...">
+      </div>
+      <button class="btn btn-primary" id="openAddItem">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Tambah Barang
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total SKU</div>
+        <div class="stat-value" id="statSku">0</div>
+        <div class="stat-sub">Jenis barang terdaftar</div>
+      </div>
+      <div class="stat-card good">
+        <div class="stat-label">Total Unit Stok</div>
+        <div class="stat-value" id="statUnits">0</div>
+        <div class="stat-sub">Akumulasi seluruh gudang</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="stat-label">Stok Menipis</div>
+        <div class="stat-value" id="statLow">0</div>
+        <div class="stat-sub">Perlu segera diisi ulang</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Transaksi Hari Ini</div>
+        <div class="stat-value" id="statTx">0</div>
+        <div class="stat-sub">Stok masuk &amp; keluar</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Daftar Inventaris</h2>
+          <span class="count-pill" id="invCount">0 barang</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>SKU / Barang</th>
+              <th>Kategori</th>
+              <th>Level Stok</th>
+              <th>Status</th>
+              <th style="text-align:right;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Papan Manifest</h2>
+          <span class="count-pill" id="txCount">0 entri</span>
+        </div>
+        <div class="manifest" id="manifestList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Tambah / Edit Barang -->
+<div class="modal-backdrop" id="modalItem">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalItemTitle">Tambah Barang</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Nama Barang</label>
+        <input type="text" id="fName" placeholder="Contoh: Kabel HDMI 2m">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>SKU</label>
+          <input type="text" id="fSku" placeholder="SKU-1001">
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <select id="fCategory">
+            <option>Elektronik</option>
+            <option>Consumables</option>
+            <option>Sparepart</option>
+            <option>APD</option>
+            <option>Bahan Baku</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Lokasi Rak</label>
+          <input type="text" id="fLocation" placeholder="Rak A1">
+        </div>
+        <div class="field">
+          <label>Satuan</label>
+          <input type="text" id="fUnit" placeholder="pcs / roll / unit">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Stok Awal</label>
+          <input type="number" id="fQty" min="0" value="0">
+        </div>
+        <div class="field">
+          <label>Stok Minimum</label>
+          <input type="number" id="fMin" min="0" value="10">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Batal</button>
+      <button class="btn btn-primary" id="saveItemBtn">Simpan Barang</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Stok Masuk / Keluar -->
+<div class="modal-backdrop" id="modalStock">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalStockTitle">Stok Masuk</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="stock-context" id="stockContext"></div>
+      <div class="field">
+        <label id="stockQtyLabel">Jumlah</label>
+        <input type="number" id="fStockQty" min="1" value="1">
+      </div>
+      <div class="field">
+        <label>Catatan (opsional)</label>
+        <input type="text" id="fStockNote" placeholder="Contoh: Restock dari supplier A">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Batal</button>
+      <button class="btn btn-primary" id="confirmStockBtn">Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Konfirmasi Hapus -->
+<div class="modal-backdrop" id="modalDelete">
+  <div class="modal" style="width:360px;">
+    <div class="modal-head">
+      <h3>Hapus Barang?</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13.5px;color:var(--text-dim);">Barang <b id="deleteItemName" style="color:var(--text);"></b> akan dihapus permanen dari inventaris. Tindakan ini tidak dapat dibatalkan.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Batal</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- STATE ---------------- */
+  let items = [
+    {id:1, sku:'SKU-1001', name:'Kabel HDMI 2m', category:'Elektronik', location:'Rak A1', qty:120, min:30, unit:'pcs'},
+    {id:2, sku:'SKU-1002', name:'Baterai AA (isi 4)', category:'Elektronik', location:'Rak A2', qty:45, min:50, unit:'pack'},
+    {id:3, sku:'SKU-1003', name:'Kardus Packing Besar', category:'Consumables', location:'Rak B1', qty:300, min:100, unit:'pcs'},
+    {id:4, sku:'SKU-1004', name:'Selotip Bening 2 inch', category:'Consumables', location:'Rak B2', qty:18, min:40, unit:'roll'},
+    {id:5, sku:'SKU-1005', name:'Mouse Wireless', category:'Elektronik', location:'Rak A3', qty:60, min:20, unit:'pcs'},
+    {id:6, sku:'SKU-1006', name:'Sarung Tangan Safety', category:'APD', location:'Rak C1', qty:8, min:25, unit:'pasang'},
+    {id:7, sku:'SKU-1007', name:'Pallet Kayu Standar', category:'Sparepart', location:'Rak D1', qty:40, min:10, unit:'unit'},
+    {id:8, sku:'SKU-1008', name:'Label Barcode Roll', category:'Consumables', location:'Rak B3', qty:75, min:30, unit:'roll'},
+    {id:9, sku:'SKU-1009', name:'Charger Laptop Universal', category:'Elektronik', location:'Rak A4', qty:22, min:15, unit:'pcs'},
+    {id:10, sku:'SKU-1010', name:'Box Arsip Plastik', category:'Consumables', location:'Rak B4', qty:150, min:50, unit:'pcs'}
+  ];
+
+  let transactions = [
+    {id:1, type:'masuk', name:'Kabel HDMI 2m', qty:50, unit:'pcs', note:'Pengiriman dari supplier utama', time: Date.now()-1000*60*40},
+    {id:2, type:'keluar', name:'Sarung Tangan Safety', qty:12, unit:'pasang', note:'Distribusi ke tim produksi', time: Date.now()-1000*60*95},
+    {id:3, type:'keluar', name:'Selotip Bening 2 inch', qty:22, unit:'roll', note:'Kebutuhan packing harian', time: Date.now()-1000*60*160}
+  ];
+
+  let nextItemId = 11;
+  let nextTxId = 4;
+  let searchTerm = '';
+  let currentView = 'dashboard';
+  let stockContextItemId = null;
+  let stockContextType = null;
+  let deleteContextId = null;
+
+  /* ---------------- HELPERS ---------------- */
+  function statusOf(item){
+    if(item.qty <= 0) return 'crit';
+    if(item.qty <= item.min) return 'warn';
+    return 'ok';
+  }
+  function statusLabel(s){
+    return s === 'crit' ? 'Habis' : s === 'warn' ? 'Menipis' : 'Aman';
+  }
+  function fmtNum(n){ return n.toLocaleString('id-ID'); }
+  function fmtTime(ts){
+    const d = new Date(ts);
+    const now = new Date();
+    const sameDay = d.toDateString() === now.toDateString();
+    const time = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    return sameDay ? time : d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) + ' · ' + time;
+  }
+  function isToday(ts){ return new Date(ts).toDateString() === new Date().toDateString(); }
+
+  function toast(msg, kind){
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (kind ? ' '+kind : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(()=>{ el.style.transition='opacity .2s'; el.style.opacity='0'; setTimeout(()=>el.remove(),200); }, 2600);
+  }
+
+  /* ---------------- RENDER: STATS ---------------- */
+  function renderStats(){
+    document.getElementById('statSku').textContent = items.length;
+    document.getElementById('statUnits').textContent = fmtNum(items.reduce((a,i)=>a+i.qty,0));
+    document.getElementById('statLow').textContent = items.filter(i=>statusOf(i)!=='ok').length;
+    document.getElementById('statTx').textContent = transactions.filter(t=>isToday(t.time)).length;
+  }
+
+  /* ---------------- RENDER: RACK GAUGE ---------------- */
+  function rackGaugeHTML(item){
+    const s = statusOf(item);
+    const segments = 5;
+    const ratio = item.min > 0 ? item.qty / (item.min * 2) : (item.qty>0?1:0);
+    const lit = Math.max(0, Math.min(segments, Math.round(ratio*segments)));
+    let bins = '';
+    for(let i=0;i<segments;i++){
+      const on = i < lit;
+      bins += `<div class="rack-bin ${on ? 'on '+s : ''}" style="height:${8+i*3}px;"></div>`;
+    }
+    return `<div class="rack-gauge">
+        <div class="qty-text">${fmtNum(item.qty)} <span class="qty-unit">${item.unit}</span></div>
+        <div class="rack-bins">${bins}</div>
+      </div>`;
+  }
+
+  /* ---------------- RENDER: INVENTORY TABLE ---------------- */
+  function renderInventory(){
+    const tbody = document.getElementById('inventoryBody');
+    const term = searchTerm.trim().toLowerCase();
+    const filtered = items.filter(i =>
+      !term || i.name.toLowerCase().includes(term) || i.sku.toLowerCase().includes(term) || i.category.toLowerCase().includes(term)
+    );
+
+    document.getElementById('invCount').textContent = filtered.length + ' barang';
+
+    if(filtered.length === 0){
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Tidak ada barang yang cocok dengan pencarian "${escapeHtml(searchTerm)}".</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(item=>{
+      const s = statusOf(item);
+      return `
+      <tr data-id="${item.id}">
+        <td>
+          <div class="item-name">${escapeHtml(item.name)}</div>
+          <div class="item-loc">${escapeHtml(item.sku)} · ${escapeHtml(item.location)}</div>
+        </td>
+        <td><span class="cat-tag">${escapeHtml(item.category)}</span></td>
+        <td>${rackGaugeHTML(item)}</td>
+        <td><span class="status-pill ${s}">${statusLabel(s)}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn in" title="Stok Masuk" data-action="in" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+            <button class="icon-btn out" title="Stok Keluar" data-action="out" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </button>
+            <button class="icon-btn del" title="Hapus" data-action="delete" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* ---------------- RENDER: MANIFEST (TRANSACTIONS) ---------------- */
+  function renderManifest(){
+    const list = document.getElementById('manifestList');
+    document.getElementById('txCount').textContent = transactions.length + ' entri';
+    if(transactions.length === 0){
+      list.innerHTML = `<div class="manifest-empty">Belum ada transaksi stok masuk atau keluar.</div>`;
+      return;
+    }
+    const sorted = [...transactions].sort((a,b)=>b.time-a.time);
+    list.innerHTML = sorted.map(t=>`
+      <div class="manifest-item">
+        <div class="manifest-top">
+          <span class="manifest-tag ${t.type}">${t.type === 'masuk' ? 'MASUK' : 'KELUAR'}</span>
+          <span class="manifest-time">${fmtTime(t.time)}</span>
+        </div>
+        <div class="manifest-name">${escapeHtml(t.name)} · ${t.type==='masuk'?'+':'-'}${fmtNum(t.qty)} ${escapeHtml(t.unit)}</div>
+        ${t.note ? `<div class="manifest-note">${escapeHtml(t.note)}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  function renderAll(){
+    renderStats();
+    renderInventory();
+    renderManifest();
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  /* ---------------- MODAL: ADD ITEM ---------------- */
+  const modalItem = document.getElementById('modalItem');
+  document.getElementById('openAddItem').addEventListener('click', ()=>{
+    document.getElementById('modalItemTitle').textContent = 'Tambah Barang';
+    ['fName','fSku','fLocation','fUnit'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fCategory').selectedIndex = 0;
+    document.getElementById('fQty').value = 0;
+    document.getElementById('fMin').value = 10;
+    openModal(modalItem);
+    document.getElementById('fName').focus();
+  });
+
+  document.getElementById('saveItemBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('fName').value.trim();
+    let sku = document.getElementById('fSku').value.trim();
+    const category = document.getElementById('fCategory').value;
+    const location = document.getElementById('fLocation').value.trim() || '—';
+    const unit = document.getElementById('fUnit').value.trim() || 'pcs';
+    const qty = Math.max(0, parseInt(document.getElementById('fQty').value) || 0);
+    const min = Math.max(0, parseInt(document.getElementById('fMin').value) || 0);
+
+    if(!name){ toast('Nama barang wajib diisi', 'danger'); document.getElementById('fName').focus(); return; }
+    if(!sku){ sku = 'SKU-' + (1000 + nextItemId); }
+    if(items.some(i=>i.sku.toLowerCase() === sku.toLowerCase())){
+      toast('SKU sudah digunakan, gunakan SKU lain', 'danger');
+      return;
+    }
+
+    items.push({id: nextItemId++, sku, name, category, location, qty, min, unit});
+    closeModal(modalItem);
+    renderAll();
+    toast('Barang "' + name + '" berhasil ditambahkan');
+  });
+
+  /* ---------------- MODAL: STOCK IN / OUT ---------------- */
+  const modalStock = document.getElementById('modalStock');
+
+  function openStockModal(id, type){
+    const item = items.find(i=>i.id===id);
+    if(!item) return;
+    stockContextItemId = id;
+    stockContextType = type;
+    document.getElementById('modalStockTitle').textContent = type==='in' ? 'Stok Masuk' : 'Stok Keluar';
+    document.getElementById('stockQtyLabel').textContent = 'Jumlah ' + (type==='in' ? 'Masuk' : 'Keluar') + ' (' + item.unit + ')';
+    document.getElementById('stockContext').innerHTML =
+      `<b>${escapeHtml(item.name)}</b> · ${escapeHtml(item.sku)}<br>Stok saat ini: <b>${fmtNum(item.qty)} ${escapeHtml(item.unit)}</b> di ${escapeHtml(item.location)}`;
+    document.getElementById('fStockQty').value = 1;
+    document.getElementById('fStockQty').max = type==='out' ? item.qty : '';
+    document.getElementById('fStockNote').value = '';
+    openModal(modalStock);
+    document.getElementById('fStockQty').focus();
+  }
+
+  document.getElementById('confirmStockBtn').addEventListener('click', ()=>{
+    const item = items.find(i=>i.id===stockContextItemId);
+    if(!item) return;
+    const qty = parseInt(document.getElementById('fStockQty').value) || 0;
+    const note = document.getElementById('fStockNote').value.trim();
+
+    if(qty <= 0){ toast('Jumlah harus lebih dari 0', 'danger'); return; }
+    if(stockContextType === 'out' && qty > item.qty){
+      toast('Jumlah keluar melebihi stok yang tersedia', 'danger');
+      return;
+    }
+
+    if(stockContextType === 'in'){
+      item.qty += qty;
+    } else {
+      item.qty -= qty;
+    }
+
+    transactions.push({
+      id: nextTxId++,
+      type: stockContextType === 'in' ? 'masuk' : 'keluar',
+      name: item.name,
+      qty, unit: item.unit, note,
+      time: Date.now()
+    });
+
+    closeModal(modalStock);
+    renderAll();
+    toast((stockContextType==='in' ? 'Stok masuk dicatat: ' : 'Stok keluar dicatat: ') + qty + ' ' + item.unit, stockContextType==='in' ? '' : 'warn');
+  });
+
+  /* ---------------- MODAL: DELETE ---------------- */
+  const modalDelete = document.getElementById('modalDelete');
+  function openDeleteModal(id){
+    const item = items.find(i=>i.id===id);
+    if(!item) return;
+    deleteContextId = id;
+    document.getElementById('deleteItemName').textContent = item.name;
+    openModal(modalDelete);
+  }
+  document.getElementById('confirmDeleteBtn').addEventListener('click', ()=>{
+    const item = items.find(i=>i.id===deleteContextId);
+    items = items.filter(i=>i.id!==deleteContextId);
+    closeModal(modalDelete);
+    renderAll();
+    if(item) toast('Barang "' + item.name + '" dihapus', 'danger');
+  });
+
+  /* ---------------- MODAL HELPERS ---------------- */
+  function openModal(el){ el.classList.add('show'); }
+  function closeModal(el){ el.classList.remove('show'); }
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click', ()=> btn.closest('.modal-backdrop').classList.remove('show'));
+  });
+  document.querySelectorAll('.modal-backdrop').forEach(bd=>{
+    bd.addEventListener('click', (e)=>{ if(e.target === bd) bd.classList.remove('show'); });
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ document.querySelectorAll('.modal-backdrop.show').forEach(m=>m.classList.remove('show')); }
+  });
+
+  /* ---------------- TABLE ACTION DELEGATION ---------------- */
+  document.getElementById('inventoryBody').addEventListener('click', (e)=>{
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = parseInt(btn.dataset.id);
+    const action = btn.dataset.action;
+    if(action === 'in') openStockModal(id, 'in');
+    else if(action === 'out') openStockModal(id, 'out');
+    else if(action === 'delete') openDeleteModal(id);
+  });
+
+  /* ---------------- SEARCH ---------------- */
+  document.getElementById('searchInput').addEventListener('input', (e)=>{
+    searchTerm = e.target.value;
+    renderInventory();
+  });
+
+  /* ---------------- NAV (view switching, kept simple: all data lives in one scroll page, nav scrolls / filters) ---------------- */
+  const views = {
+    dashboard:{eyebrow:'RINGKASAN OPERASIONAL', title:'Dashboard Gudang', filter:null},
+    inventory:{eyebrow:'DATA BARANG', title:'Inventaris', filter:null},
+    transactions:{eyebrow:'LOG AKTIVITAS', title:'Riwayat Transaksi', filter:null},
+    lowstock:{eyebrow:'PERHATIAN', title:'Stok Menipis & Habis', filter:'low'}
+  };
+  document.querySelectorAll('.nav-item').forEach(nav=>{
+    nav.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      nav.classList.add('active');
+      const view = nav.dataset.view;
+      currentView = view;
+      const v = views[view];
+      document.getElementById('pageEyebrow').textContent = v.eyebrow;
+      document.getElementById('pageTitle').textContent = v.title;
+      applyViewFilter();
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  function applyViewFilter(){
+    const tbody = document.getElementById('inventoryBody');
+    if(currentView === 'lowstock'){
+      const term = searchTerm.trim().toLowerCase();
+      const filtered = items.filter(i => statusOf(i) !== 'ok' &&
+        (!term || i.name.toLowerCase().includes(term) || i.sku.toLowerCase().includes(term)));
+      document.getElementById('invCount').textContent = filtered.length + ' barang';
+      if(filtered.length===0){
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Semua stok dalam kondisi aman. Tidak ada yang perlu diisi ulang.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(item=>{
+        const s = statusOf(item);
+        return `
+        <tr data-id="${item.id}">
+          <td>
+            <div class="item-name">${escapeHtml(item.name)}</div>
+            <div class="item-loc">${escapeHtml(item.sku)} · ${escapeHtml(item.location)}</div>
+          </td>
+          <td><span class="cat-tag">${escapeHtml(item.category)}</span></td>
+          <td>${rackGaugeHTML(item)}</td>
+          <td><span class="status-pill ${s}">${statusLabel(s)}</span></td>
+          <td>
+            <div class="row-actions">
+              <button class="icon-btn in" title="Stok Masuk" data-action="in" data-id="${item.id}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              </button>
+              <button class="icon-btn out" title="Stok Keluar" data-action="out" data-id="${item.id}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              </button>
+              <button class="icon-btn del" title="Hapus" data-action="delete" data-id="${item.id}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    } else {
+      renderInventory();
+    }
+  }
+
+  /* ---------------- INIT ---------------- */
+  renderAll();
+})();
+</script>
+</body>
+</html>

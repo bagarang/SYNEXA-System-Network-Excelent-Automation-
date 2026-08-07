@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - Process & Technology</title>
+
+    <!-- Import Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Footer) */
+            --dark-bg-navy: #020617;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--accent-cyan); }
+
+        .nav-links { display: flex; gap: 25px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--secondary-slate);
+            font-weight: 500; font-size: 0.95rem; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* === SECTION 1: DEVELOPMENT PROCESS === */
+        .process-section {
+            width: 100%;
+            padding: 150px 5% 100px; /* Offset for navbar */
+            display: flex; flex-direction: column; align-items: center;
+            background: radial-gradient(circle at top, var(--card-white) 0%, var(--bg-soft-white) 100%);
+        }
+
+        /* HEADER */
+        .header-content {
+            text-align: center; max-width: 800px; margin-bottom: 120px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .subtitle-tag {
+            font-size: 0.9rem; font-weight: 700; letter-spacing: 2px;
+            color: var(--accent-cyan); text-transform: uppercase;
+            margin-bottom: 15px; display: inline-block;
+        }
+
+        .main-title {
+            font-size: 4rem; font-weight: 800; color: var(--primary-navy);
+            letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 20px;
+        }
+        .main-title span {
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, #3b82f6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* TIMELINE HORIZONTAL */
+        .timeline-wrapper {
+            position: relative; width: 100%; max-width: 1400px;
+            margin: 0 auto; padding: 50px 0;
+        }
+
+        .timeline-track {
+            position: absolute; top: 50%; left: 0; transform: translateY(-50%);
+            width: 100%; height: 4px; background: var(--border-gray);
+            border-radius: 2px; z-index: 1;
+        }
+
+        .timeline-progress {
+            position: absolute; top: 50%; left: 0; transform: translateY(-50%);
+            width: 0%; height: 4px; background: var(--accent-cyan);
+            border-radius: 2px; z-index: 2; box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+            animation: fillProgress 3s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+        }
+
+        .timeline-steps {
+            display: flex; justify-content: space-between; position: relative;
+            z-index: 10; width: 100%;
+        }
+
+        .step {
+            display: flex; flex-direction: column; align-items: center;
+            position: relative; width: 12%;
+        }
+
+        .step-node {
+            width: 60px; height: 60px; background: var(--card-white);
+            border: 4px solid var(--border-gray); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--secondary-slate); font-size: 1.5rem; transition: all 0.4s ease;
+            position: relative; animation: activateNode 0.5s ease forwards;
+            animation-delay: calc(0.5s + (var(--i) * 0.35s)); 
+        }
+        .step-node svg { width: 24px; height: 24px; stroke-width: 2; }
+
+        .step-content {
+            position: absolute; width: 160px; text-align: center; opacity: 0;
+            animation: fadeInText 0.5s ease forwards;
+            animation-delay: calc(0.7s + (var(--i) * 0.35s));
+        }
+
+        .step:nth-child(odd) .step-content { top: 80px; }
+        .step:nth-child(even) .step-content { bottom: 80px; }
+
+        .step-number {
+            font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan);
+            letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase;
+        }
+
+        .step-title {
+            font-size: 1.1rem; font-weight: 700; color: var(--primary-navy);
+        }
+
+        .step:hover .step-node {
+            transform: scale(1.15); box-shadow: var(--shadow-soft);
+        }
+
+        /* === SECTION 2: TECHNOLOGY STACK === */
+        .tech-section {
+            width: 100%; padding: 100px 5%; background: var(--card-white);
+            display: flex; flex-direction: column; align-items: center;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .tech-header { text-align: center; margin-bottom: 60px; }
+        .tech-title {
+            font-size: 3rem; font-weight: 800; color: var(--primary-navy);
+            margin-bottom: 15px; letter-spacing: -1px;
+        }
+        .tech-desc {
+            color: var(--secondary-slate); font-size: 1.1rem; max-width: 600px;
+            margin: 0 auto; line-height: 1.6;
+        }
+
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px; width: 100%; max-width: 1200px;
+        }
+
+        .tech-card {
+            background: var(--bg-soft-white); border: 1px solid var(--border-gray);
+            border-radius: var(--radius-main); padding: 35px 30px;
+            transition: all 0.4s ease; display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-8px); background: var(--card-white);
+            box-shadow: var(--shadow-soft); border-color: var(--hover-light-blue);
+        }
+
+        .tech-icon {
+            width: 55px; height: 55px; background: var(--hover-light-blue);
+            color: var(--accent-cyan); border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; transition: all 0.4s ease;
+        }
+        .tech-card:hover .tech-icon { background: var(--accent-cyan); color: var(--card-white); }
+        .tech-icon svg { width: 28px; height: 28px; stroke-width: 1.5; }
+
+        .tech-card-title { font-size: 1.3rem; font-weight: 700; color: var(--primary-navy); }
+        .tech-card-desc { font-size: 1rem; color: var(--secondary-slate); line-height: 1.6; }
+
+        /* CTA SECTION */
+        .cta-wrapper {
+            margin-top: 80px; text-align: center; width: 100%; padding-bottom: 60px;
+        }
+
+        .btn-action {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 18px 50px; font-size: 1.1rem; font-weight: 600;
+            background: var(--primary-navy); color: var(--card-white);
+            border-radius: 50px; text-decoration: none;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.3);
+            background: #1e293b;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: var(--dark-bg-navy); color: var(--dark-text-secondary);
+            padding: 80px 5% 40px; border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1300px; margin: 0 auto;
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem; font-weight: 800; color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+        .footer-logo span { color: var(--dark-accent); }
+
+        .footer-acronym {
+            list-style: none; display: flex; gap: 20px; font-size: 1.1rem;
+            font-weight: 500; color: var(--dark-text-white); flex-wrap: wrap; justify-content: center;
+        }
+        .footer-acronym li { display: flex; align-items: center; gap: 20px; }
+        .footer-acronym li:not(:last-child)::after { content: "•"; color: var(--dark-accent); }
+
+        .footer-tagline { font-size: 1.2rem; color: var(--dark-accent); font-weight: 600; margin-top: 10px; }
+
+        .footer-bottom {
+            margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%; max-width: 1300px; margin-inline: auto; text-align: center;
+            font-size: 0.9rem; color: var(--secondary-slate);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+            .timeline-wrapper { padding: 0; max-width: 600px; margin-bottom: 50px; }
+            .timeline-track { top: 0; left: 30px; width: 4px; height: 100%; transform: none; }
+            .timeline-progress { top: 0; left: 30px; width: 4px; height: 0%; transform: none; animation: fillProgressVertical 3s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
+            .timeline-steps { flex-direction: column; gap: 50px; }
+            .step { flex-direction: row; width: 100%; justify-content: flex-start; }
+            .step-content, .step:nth-child(odd) .step-content, .step:nth-child(even) .step-content {
+                position: relative; top: auto; bottom: auto; width: auto; text-align: left; margin-left: 30px;
+            }
+            .step-node { margin-left: 2px; flex-shrink: 0; }
+            .header-content { margin-bottom: 60px; }
+        }
+
+        @media (max-width: 900px) { .main-title, .tech-title { font-size: 3rem; } }
+
+        @media (max-width: 600px) {
+            .process-section, .tech-section { padding: 120px 5% 80px; }
+            .main-title, .tech-title { font-size: 2.2rem; }
+            .timeline-track, .timeline-progress { left: 20px; }
+            .step-node { width: 50px; height: 50px; margin-left: -5px; }
+            .step-node svg { width: 20px; height: 20px; }
+            .tech-grid { grid-template-columns: 1fr; }
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fillProgress { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes fillProgressVertical { 0% { height: 0%; } 100% { height: 100%; } }
+        @keyframes activateNode {
+            0% { border-color: var(--border-gray); color: var(--secondary-slate); }
+            100% { border-color: var(--accent-cyan); color: var(--accent-cyan); background: var(--card-white); box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        }
+        @keyframes fadeInText { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html">Modules</a></li>
+            <li><a href="Development-Process-Technology.html" style="color:var(--accent-cyan);">Technology</a></li>
+            <li><a href="why_portofolio.html">Portfolio</a></li>
+            <li><a href="faq-contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- === SECTION 1: DEVELOPMENT PROCESS === -->
+    <section class="process-section">
+        
+        <div class="header-content">
+            <div class="subtitle-tag">Methodology</div>
+            <h1 class="main-title">The <span>SYNEXA</span><br>Development Process</h1>
+        </div>
+
+        <div class="timeline-wrapper">
+            <div class="timeline-track"></div>
+            <div class="timeline-progress"></div>
+
+            <div class="timeline-steps">
+                <!-- 1. Discovery -->
+                <div class="step" style="--i: 0;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 01</div><h3 class="step-title">Discovery</h3>
+                    </div>
+                </div>
+
+                <!-- 2. Business Analysis -->
+                <div class="step" style="--i: 1;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 02</div><h3 class="step-title">Business Analysis</h3>
+                    </div>
+                </div>
+
+                <!-- 3. UI/UX Design -->
+                <div class="step" style="--i: 2;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 03</div><h3 class="step-title">UI/UX Design</h3>
+                    </div>
+                </div>
+
+                <!-- 4. Development -->
+                <div class="step" style="--i: 3;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 04</div><h3 class="step-title">Development</h3>
+                    </div>
+                </div>
+
+                <!-- 5. QA Testing -->
+                <div class="step" style="--i: 4;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 05</div><h3 class="step-title">QA Testing</h3>
+                    </div>
+                </div>
+
+                <!-- 6. Deployment -->
+                <div class="step" style="--i: 5;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.499 4.499 0 00-1.757 4.306 4.499 4.499 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 06</div><h3 class="step-title">Deployment</h3>
+                    </div>
+                </div>
+
+                <!-- 7. Training -->
+                <div class="step" style="--i: 6;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 07</div><h3 class="step-title">Training</h3>
+                    </div>
+                </div>
+
+                <!-- 8. Support -->
+                <div class="step" style="--i: 7;">
+                    <div class="step-node"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"></path></svg></div>
+                    <div class="step-content">
+                        <div class="step-number">Phase 08</div><h3 class="step-title">Support</h3>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- === SECTION 2: TECHNOLOGY STACK === -->
+    <section class="tech-section">
+        
+        <div class="tech-header">
+            <h2 class="tech-title">Powered By Modern Tech</h2>
+            <p class="tech-desc">We build solutions using secure, scalable, and reliable technologies tailored to support your enterprise growth.</p>
+        </div>
+
+        <div class="tech-grid">
+            
+            <!-- 1. Frontend -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM3 9h18M9 21V9"></path></svg></div>
+                <h3 class="tech-card-title">Frontend</h3>
+                <p class="tech-card-desc">Interactive, user-friendly, and highly responsive interfaces designed for seamless user experiences across all devices.</p>
+            </div>
+
+            <!-- 2. Backend -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg></div>
+                <h3 class="tech-card-title">Backend</h3>
+                <p class="tech-card-desc">Robust and reliable core business logic engineered to handle complex operations and heavy data processing smoothly.</p>
+            </div>
+
+            <!-- 3. Database -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"></path></svg></div>
+                <h3 class="tech-card-title">Database</h3>
+                <p class="tech-card-desc">Secure, fast, and scalable data storage architecture ensuring your business information is always accurate and accessible.</p>
+            </div>
+
+            <!-- 4. Cloud -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.361 7.5 7.5 0 00-13.39-2.233A4.5 4.5 0 002.25 15z"></path></svg></div>
+                <h3 class="tech-card-title">Cloud</h3>
+                <p class="tech-card-desc">High availability and flexible deployments through modern cloud infrastructure to support remote access globally.</p>
+            </div>
+
+            <!-- 5. API -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path></svg></div>
+                <h3 class="tech-card-title">API Integration</h3>
+                <p class="tech-card-desc">Seamless and standardized connections allowing effortless integration with external third-party services and platforms.</p>
+            </div>
+
+            <!-- 6. Security -->
+            <div class="tech-card">
+                <div class="tech-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg></div>
+                <h3 class="tech-card-title">Security</h3>
+                <p class="tech-card-desc">Enterprise-grade protection with encrypted data transmission and secure authentication protocols for your peace of mind.</p>
+            </div>
+
+        </div>
+
+        <!-- =========================================================================
+             HIGHLIGHT SCRIPT: CTA
+             ========================================================================= -->
+        <div class="cta-wrapper">
+            <a href="faq-contact.html" class="btn-action">Start Your Project With Us</a>
+        </div>
+        <!-- ========================================================================= -->
+
+    </section>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- SCRIPT NAVBAR -->
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+</body>
+</html>

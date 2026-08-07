@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNEXA - Why Us & Portfolio</title>
+
+    <!-- Import Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            /* Light Theme */
+            --bg-soft-white: #F8FAFC;
+            --card-white: #FFFFFF;
+            --primary-navy: #0F172A;
+            --secondary-slate: #475569;
+            --accent-cyan: #06B6D4;
+            --success-emerald: #10B981;
+            --border-gray: #E2E8F0;
+            --hover-light-blue: #E0F2FE;
+            
+            /* Dark Theme (Portfolio Section & Footer) */
+            --dark-bg-navy: #020617;
+            --dark-card-slate: #0F172A;
+            --dark-secondary-card: #1E293B;
+            --dark-text-white: #F8FAFC;
+            --dark-text-secondary: #CBD5E1;
+            --dark-primary-cyan: #22D3EE;
+            --dark-accent: #38BDF8;
+
+            /* UI Properties */
+            --radius-main: 20px;
+            --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* === RESET & BASE STYLES === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            background: var(--bg-soft-white);
+            color: var(--primary-navy);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .nav-logo, .footer-logo {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* === NAVBAR (GLASSMORPHISM) === */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .nav-logo span { color: var(--accent-cyan); }
+
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--secondary-slate);
+            font-weight: 500; font-size: 0.9rem; transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* === SECTION 1: WHY CHOOSE US === */
+        .why-section {
+            width: 100%;
+            padding: 150px 5% 100px; /* Offset for navbar */
+            background: var(--card-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 60px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .subtitle-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .main-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        /* 6 Cards Grid */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .why-card {
+            background: var(--bg-soft-white);
+            border: 1px solid var(--border-gray);
+            border-radius: var(--radius-main);
+            padding: 40px 30px;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .why-card:hover {
+            transform: translateY(-8px);
+            background: var(--card-white);
+            box-shadow: var(--shadow-soft);
+            border-color: var(--hover-light-blue);
+        }
+
+        .why-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--hover-light-blue);
+            color: var(--accent-cyan);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+        }
+
+        .why-card:hover .why-icon {
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            transform: scale(1.1);
+        }
+
+        .why-icon svg {
+            width: 26px;
+            height: 26px;
+            stroke-width: 1.5;
+        }
+
+        .why-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        .why-desc {
+            font-size: 0.95rem;
+            color: var(--secondary-slate);
+            line-height: 1.6;
+        }
+
+        /* === SECTION 2: PORTFOLIO SLIDER === */
+        .portfolio-section {
+            width: 100%;
+            padding: 100px 5% 150px;
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-bg-pattern {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .port-header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            max-width: 1300px;
+            margin: 0 auto 50px auto;
+        }
+
+        .port-title-area .subtitle-tag {
+            color: var(--dark-accent);
+        }
+
+        .port-title-area h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        /* Slider Controls */
+        .slider-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .slider-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--dark-text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-btn:hover {
+            background: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            transform: scale(1.1);
+        }
+
+        /* Slider Container */
+        .slider-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding-bottom: 40px;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Portfolio Card */
+        .port-card {
+            min-width: 350px;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-main);
+            padding: 30px;
+            scroll-snap-align: start;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .port-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.2) inset;
+        }
+
+        .port-card-img-placeholder {
+            width: 100%;
+            height: 180px;
+            background: rgba(6, 182, 212, 0.05);
+            border: 1px dashed rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-accent);
+            transition: all 0.3s ease;
+        }
+
+        .port-card:hover .port-card-img-placeholder {
+            background: rgba(6, 182, 212, 0.15);
+            border-style: solid;
+        }
+
+        .port-card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-text-white);
+        }
+
+        .port-card-tag {
+            font-size: 0.8rem;
+            color: var(--dark-text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === POPUP / MODAL === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-white);
+            width: 90%;
+            max-width: 650px;
+            border-radius: var(--radius-main);
+            padding: 40px;
+            position: relative;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            color: var(--primary-navy);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: var(--bg-soft-white);
+            border: none;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--secondary-slate);
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .modal-body-img {
+            width: 100%;
+            height: 250px;
+            background: var(--bg-soft-white);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-slate);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 15px;
+        }
+
+        .modal-desc {
+            font-size: 1.05rem;
+            color: var(--secondary-slate);
+            line-height: 1.6;
+        }
+
+        .modal-demo-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px;
+            padding: 14px 32px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .modal-demo-btn:hover {
+            transform: translateY(-3px);
+            background: #0891b2;
+            box-shadow: 0 15px 35px -5px rgba(6, 182, 212, 0.6);
+        }
+
+        /* === CTA WRAPPER === */
+        .cta-wrapper {
+            margin-top: 60px;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--accent-cyan);
+            color: var(--card-white);
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            background: #0891b2;
+            box-shadow: 0 15px 35px -5px rgba(6, 182, 212, 0.6);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: var(--dark-bg-navy);
+            color: var(--dark-text-secondary);
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-text-white);
+            letter-spacing: -1px;
+        }
+
+        .footer-logo span {
+            color: var(--dark-accent);
+        }
+
+        .footer-acronym {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-text-white);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-acronym li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-acronym li:not(:last-child)::after {
+            content: "•";
+            color: var(--dark-accent);
+        }
+
+        .footer-tagline {
+            font-size: 1.2rem;
+            color: var(--dark-accent);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin-inline: auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary-slate);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .footer-acronym { flex-direction: column; gap: 10px; }
+            .footer-acronym li:not(:last-child)::after { display: none; }
+        }
+
+        @media (max-width: 992px) {
+            .why-grid { grid-template-columns: repeat(2, 1fr); }
+            .port-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .slider-controls { align-self: flex-end; }
+        }
+
+        @media (max-width: 600px) {
+            .why-section, .portfolio-section { padding: 120px 5% 80px; }
+            .why-grid { grid-template-columns: 1fr; }
+            .main-title, .port-title-area h2 { font-size: 2.2rem; }
+            .port-card { min-width: 280px; }
+            .modal-content { padding: 30px 20px; }
+            .modal-title { font-size: 1.6rem; }
+            .modal-body-img { height: 180px; }
+        }
+
+        /* === KEYFRAMES === */
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === NAVBAR === -->
+    <nav class="navbar" id="navbar">
+        <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="Business-Industries.html">Industries</a></li>
+            <li><a href="Trusted_Solution.html">Solutions</a></li>
+            <li><a href="Our_Solutions.html">Platform</a></li>
+            <li><a href="Product_Modules.html">Modules</a></li>
+            <li><a href="Development-Process-Technology.html">Technology</a></li>
+            <li><a href="why_portofolio.html" style="color:var(--accent-cyan);">Portfolio</a></li>
+            <li><a href="faq-contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- === SECTION 1: WHY CHOOSE US === -->
+    <section class="why-section">
+        <div class="section-header">
+            <div class="subtitle-tag">Why SYNEXA</div>
+            <h1 class="main-title">The Foundation Of Our Success</h1>
+        </div>
+
+        <div class="why-grid">
+            
+            <!-- 1. Custom Development -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26"></path></svg>
+                </div>
+                <h3 class="why-title">Custom Development</h3>
+                <p class="why-desc">Tailored precisely to your unique operational workflow, ensuring the software adapts to your business, not the other way around.</p>
+            </div>
+
+            <!-- 2. Business Oriented -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"></path></svg>
+                </div>
+                <h3 class="why-title">Business Oriented</h3>
+                <p class="why-desc">Focused on driving ROI, boosting team efficiency, and solving real-world corporate bottlenecks effectively.</p>
+            </div>
+
+            <!-- 3. Scalable -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"></path></svg>
+                </div>
+                <h3 class="why-title">Scalable</h3>
+                <p class="why-desc">Built with future-proof architecture that grows seamlessly along with your enterprise data and user base.</p>
+            </div>
+
+            <!-- 4. Secure -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg>
+                </div>
+                <h3 class="why-title">Secure</h3>
+                <p class="why-desc">Implemented with enterprise-grade security layers, encrypted data transmission, and strict access controls.</p>
+            </div>
+
+            <!-- 5. Modern UI -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"></path></svg>
+                </div>
+                <h3 class="why-title">Modern UI</h3>
+                <p class="why-desc">Clean, intuitive, and visually engaging interfaces that reduce training time and improve employee adoption.</p>
+            </div>
+
+            <!-- 6. Long-Term Support -->
+            <div class="why-card">
+                <div class="why-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75v-4.5m0 4.5h4.5m-4.5 0l6-6m-3 18c-8.284 0-15-6.716-15-15V4.5A2.25 2.25 0 014.5 2.25h1.372c.516 0 .966.351 1.091.852l1.106 4.423c.11.44-.054.902-.417 1.173l-1.293.97a1.062 1.062 0 00-.38 1.21 12.035 12.035 0 007.143 7.143c.441.162.928-.004 1.21-.38l.97-1.293a1.125 1.125 0 011.173-.417l4.423 1.106c.5.125.852.575.852 1.091V19.5a2.25 2.25 0 01-2.25 2.25h-2.25z"></path></svg>
+                </div>
+                <h3 class="why-title">Long-Term Support</h3>
+                <p class="why-desc">Dedicated technical maintenance, regular updates, and continuous improvements to keep your system performing at its best.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- === SECTION 2: PORTFOLIO SLIDER === -->
+    <section class="portfolio-section">
+        <div class="dark-bg-pattern"></div>
+        
+        <div class="port-header">
+            <div class="port-title-area">
+                <div class="subtitle-tag">Our Works</div>
+                <h2>Featured Portfolios</h2>
+            </div>
+            
+            <!-- Slider Navigation Buttons -->
+            <div class="slider-controls">
+                <button class="slider-btn" id="btnPrev">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                </button>
+                <button class="slider-btn" id="btnNext">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="slider-container" id="portfolioSlider">
+            
+            <!-- Card 1: Sales CRM -->
+            <div class="port-card" data-title="Sales CRM" data-tag="Customer Management" data-ref="salesCRM.html">
+                <div class="port-card-tag">Customer Management</div>
+                <h3 class="port-card-title">Sales CRM</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 2: ERP Retail -->
+            <div class="port-card" data-title="ERP Retail" data-tag="Enterprise System" data-ref="erp-retail.html">
+                <div class="port-card-tag">Enterprise System</div>
+                <h3 class="port-card-title">ERP Retail</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 3: Warehouse -->
+            <div class="port-card" data-title="Warehouse" data-tag="Logistics Module" data-ref="warehouse-demo.html">
+                <div class="port-card-tag">Logistics Module</div>
+                <h3 class="port-card-title">Warehouse</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m8.25-3v-6.5a2.25 2.25 0 00-.659-1.591l-7.5-7.5a2.25 2.25 0 00-3.182 0l-7.5 7.5a2.25 2.25 0 00-.659 1.591v6.5a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25z" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 4: Inventory -->
+            <div class="port-card" data-title="Inventory" data-tag="Stock Management" data-ref="stock-inventory-demo.html">
+                <div class="port-card-tag">Stock Management</div>
+                <h3 class="port-card-title">Inventory</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 5: HR -->
+            <div class="port-card" data-title="HR" data-tag="Human Resources" data-ref="hr-demo.html">
+                <div class="port-card-tag">Human Resources</div>
+                <h3 class="port-card-title">HR</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 6: Photobooth AI -->
+            <div class="port-card" data-title="Photobooth AI" data-tag="Artificial Intelligence" data-ref="photobooth.html">
+                <div class="port-card-tag">Artificial Intelligence</div>
+                <h3 class="port-card-title">Photobooth AI</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
+                </div>
+            </div>
+
+            <!-- Card 7: Approval Workflow -->
+            <div class="port-card" data-title="Approval Workflow" data-tag="Automation" data-ref="approval.html">
+                <div class="port-card-tag">Automation</div>
+                <h3 class="port-card-title">Approval Workflow</h3>
+                <div class="port-card-img-placeholder">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =========================================================================
+             HIGHLIGHT SCRIPT: TOMBOL REFERENSI / CALL TO ACTION (CTA)
+             ========================================================================= -->
+        <div class="cta-wrapper">
+            <a href="faq-contact.html" class="btn-action">Ready to Build Your System?</a>
+        </div>
+        <!-- ========================================================================= -->
+
+    </section>
+
+    <!-- === POPUP / MODAL ELEMENT === -->
+    <div class="modal-overlay" id="portModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closePortModal">✕</button>
+            <div class="modal-body-img">Mockup / Screenshot Area</div>
+            <h2 class="modal-title" id="portTitle">Project Title</h2>
+            <p class="modal-desc" id="portDesc">Project description goes here.</p>
+            <a href="#" class="modal-demo-btn" id="portDemoLink" target="_blank" rel="noopener">
+                Lihat Demo
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L12 6M6 6h6v6"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">SYN<span>EXA</span></div>
+            
+            <ul class="footer-acronym">
+                <li>System</li>
+                <li>Network</li>
+                <li>Excellence</li>
+                <li>Automation</li>
+            </ul>
+
+            <div class="footer-tagline">Built For Modern Businesses.</div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 SYNEXA Enterprise. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- === SCRIPT === -->
+    <script>
+        // Navbar Scroll Logic
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Slider Controls
+        const slider = document.getElementById('portfolioSlider');
+        const btnNext = document.getElementById('btnNext');
+        const btnPrev = document.getElementById('btnPrev');
+        const scrollAmount = 375; 
+
+        btnNext.addEventListener('click', () => {
+            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+
+        btnPrev.addEventListener('click', () => {
+            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        // Modal / Popup Logic
+        const portCards = document.querySelectorAll('.port-card');
+        const modal = document.getElementById('portModal');
+        const closeModalBtn = document.getElementById('closePortModal');
+        const portTitle = document.getElementById('portTitle');
+        const portDesc = document.getElementById('portDesc');
+        const portDemoLink = document.getElementById('portDemoLink');
+
+        const portfolioDetails = {
+            "Sales CRM": "Sistem CRM kustom untuk mengelola prospek, melacak metrik KPI tim penjualan, dan mengotomatiskan siklus follow-up klien dari hulu ke hilir.",
+            "ERP Retail": "Solusi Enterprise Resource Planning (ERP) menyeluruh untuk industri ritel, mengintegrasikan kasir (POS), pembelian, hingga pembukuan keuangan sentral.",
+            "Warehouse": "Manajemen tata letak gudang cerdas dengan pemetaan lokasi, dukungan barcode scanner, dan sistem optimasi alur inbound/outbound logistik.",
+            "Inventory": "Aplikasi pelacakan inventaris real-time untuk mencegah selisih stok (stock opname), mendeteksi kadaluarsa, dan mengatur perputaran barang.",
+            "HR": "Platform sentralisasi data karyawan, mencakup absensi digital, perhitungan payroll/pajak, manajemen cuti, dan matriks evaluasi kinerja.",
+            "Photobooth AI": "Sistem integrasi tangkapan visual interaktif berbasis AI yang memproses foto secara real-time untuk event promosi dan aktivasi brand modern.",
+            "Approval Workflow": "Modul digitalisasi dokumen dengan sistem otorisasi multi-level yang aman, cepat, dan sepenuhnya paperless untuk kebutuhan korporat."
+        };
+
+        portCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const title = card.getAttribute('data-title');
+                const ref = card.getAttribute('data-ref');
+                portTitle.textContent = title;
+                portDesc.textContent = portfolioDetails[title] || "Detail portofolio ini sedang dalam tahap pembaruan data.";
+                if (ref) {
+                    portDemoLink.href = ref;
+                    portDemoLink.style.display = 'inline-flex';
+                } else {
+                    portDemoLink.removeAttribute('href');
+                    portDemoLink.style.display = 'none';
+                }
+                modal.classList.add('active');
+            });
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photobooth Demo</title>
+<style>
+  :root{
+    --bg:#0f0a1e; --bg2:#1a1230; --surface:#241841; --surface2:#2d1f54;
+    --border:#3d2a6b; --text:#f5f0ff; --muted:#a99dd1;
+    --primary:#a855f7; --primary-dark:#9333ea; --accent:#ec4899;
+    --green:#10b981; --amber:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+    --radius:14px; --shadow:0 4px 20px rgba(0,0,0,.3);
+    --shadow-lg:0 20px 60px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:radial-gradient(ellipse at top,var(--bg2),var(--bg));
+    color:var(--text);min-height:100vh;overflow-x:hidden
+  }
+
+  /* Topbar */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 22px;background:rgba(15,10,30,.8);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border)
+  }
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .btn-back{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 16px;border-radius:10px;border:1px solid var(--border);
+    background:var(--surface);color:var(--text);font-weight:600;font-size:13px;
+    cursor:pointer;transition:.18s;text-decoration:none
+  }
+  .btn-back:hover{background:var(--primary);border-color:var(--primary);transform:translateX(-2px)}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .logo{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;align-items:center;justify-content:center;font-size:20px
+  }
+  .brand b{font-size:17px}
+  .brand .sub{font-size:11px;color:var(--muted);display:block;margin-top:-2px}
+
+  /* Layout */
+  .container{max-width:1200px;margin:0 auto;padding:24px 22px 60px}
+  .layout{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start}
+  @media(max-width:880px){.layout{grid-template-columns:1fr}}
+
+  /* Camera panel */
+  .cam-panel{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)
+  }
+  .cam-stage{
+    position:relative;aspect-ratio:4/3;background:#000;
+    display:flex;align-items:center;justify-content:center;overflow:hidden
+  }
+  #video{
+    width:100%;height:100%;object-fit:cover;
+    transform:scaleX(1);transition:transform .15s
+  }
+  #video.mirror{transform:scaleX(-1)}
+  .cam-overlay{
+    position:absolute;inset:0;pointer-events:none;
+    display:flex;align-items:center;justify-content:center
+  }
+  .countdown{
+    font-size:120px;font-weight:800;color:#fff;
+    text-shadow:0 0 30px rgba(168,85,247,.8);
+    animation:pop .5s ease-out;display:none
+  }
+  .countdown.show{display:block}
+  @keyframes pop{0%{transform:scale(1.8);opacity:0}50%{opacity:1}100%{transform:scale(1);opacity:1}}
+  .flash{
+    position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none
+  }
+  .flash.fire{animation:flash .4s ease-out}
+  @keyframes flash{0%{opacity:0}30%{opacity:.95}100%{opacity:0}}
+  .cam-grid{
+    position:absolute;inset:0;pointer-events:none;opacity:.25;
+    background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);
+    background-size:33.33% 33.33%
+  }
+  .cam-badge{
+    position:absolute;top:12px;left:12px;
+    padding:5px 11px;border-radius:999px;font-size:11px;font-weight:600;
+    background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;gap:6px
+  }
+  .rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .cam-stage.error #video{display:none}
+  .cam-stage.error .cam-error{display:flex}
+  .cam-error{
+    display:none;flex-direction:column;align-items:center;gap:14px;
+    color:var(--muted);text-align:center;padding:30px
+  }
+  .cam-error .ic{font-size:48px}
+  .cam-error button{
+    padding:10px 20px;border-radius:9px;border:none;background:var(--primary);
+    color:#fff;font-weight:600;cursor:pointer;font-size:13px
+  }
+
+  /* Controls */
+  .controls{padding:18px;border-top:1px solid var(--border);background:var(--bg2)}
+  .ctrl-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .ctrl-row:last-child{margin-bottom:0}
+  .ctrl-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;margin-right:4px}
+  .filter-pills{display:flex;gap:7px;flex-wrap:wrap;flex:1}
+  .pill{
+    padding:7px 13px;border-radius:999px;border:1px solid var(--border);
+    background:var(--surface);color:var(--muted);font-size:12px;font-weight:500;
+    cursor:pointer;transition:.15s;user-select:none
+  }
+  .pill:hover{background:var(--surface2);color:var(--text)}
+  .pill.active{background:var(--primary);border-color:var(--primary);color:#fff}
+  .toggle{
+    display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;
+    padding:7px 13px;border-radius:9px;border:1px solid var(--border);
+    background:var(--surface);user-select:none
+  }
+  .toggle input{display:none}
+  .toggle .sw{
+    width:34px;height:18px;border-radius:999px;background:var(--border);
+    position:relative;transition:.2s
+  }
+  .toggle .sw::after{
+    content:'';position:absolute;width:14px;height:14px;border-radius:50%;
+    background:#fff;top:2px;left:2px;transition:.2s
+  }
+  .toggle input:checked + .sw{background:var(--primary)}
+  .toggle input:checked + .sw::after{transform:translateX(16px)}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px 18px;border-radius:10px;border:none;
+    background:var(--primary);color:#fff;font-weight:600;font-size:14px;
+    cursor:pointer;transition:.15s;font-family:inherit
+  }
+  .btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+  .btn.ghost:hover:not(:disabled){background:var(--surface2)}
+  .btn.accent{background:var(--accent)}
+  .btn.accent:hover:not(:disabled){background:#db2777}
+  .btn.success{background:var(--green)}
+  .btn.capture{
+    width:100%;padding:15px;font-size:15px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    box-shadow:0 6px 20px rgba(168,85,247,.4)
+  }
+  .btn.capture:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(168,85,247,.55)}
+  .btn.capture:disabled{background:var(--surface);box-shadow:none;color:var(--muted)}
+
+  /* Strip panel */
+  .strip-panel{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+    position:sticky;top:80px
+  }
+  .strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .strip-head h3{font-size:15px;font-weight:700}
+  .strip-head .count{font-size:12px;color:var(--muted);background:var(--bg2);padding:3px 10px;border-radius:999px}
+
+  /* Photo strip (classic 4-photo) */
+  .photo-strip{
+    background:#fff;border-radius:8px;padding:12px;
+    width:260px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.3s
+  }
+  .photo-strip.empty{
+    background:transparent;border:2px dashed var(--border);box-shadow:none;
+    padding:40px 12px;align-items:center;justify-content:center
+  }
+  .strip-frame{
+    aspect-ratio:4/3;background:#1a1230;border-radius:4px;overflow:hidden;
+    position:relative;display:flex;align-items:center;justify-content:center
+  }
+  .strip-frame img{width:100%;height:100%;object-fit:cover}
+  .strip-frame.empty::before{
+    content:'📷';font-size:22px;opacity:.4
+  }
+  .strip-frame .num{
+    position:absolute;top:4px;left:6px;font-size:10px;font-weight:700;
+    color:#fff;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:4px
+  }
+  .strip-footer{
+    text-align:center;padding-top:6px;color:#333;font-family:'Caveat',cursive,sans-serif
+  }
+  .strip-footer .brand-s{font-size:16px;font-weight:700;color:var(--primary-dark)}
+  .strip-footer .date{font-size:11px;color:#666;font-family:sans-serif;margin-top:2px}
+
+  .strip-actions{display:flex;gap:8px;margin-top:18px}
+  .strip-actions .btn{flex:1;padding:10px;font-size:13px}
+
+  /* Gallery */
+  .gallery{margin-top:30px}
+  .gallery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .gallery-head h3{font-size:15px;font-weight:700}
+  .gallery-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px
+  }
+  .gallery-item{
+    aspect-ratio:4/3;border-radius:10px;overflow:hidden;border:1px solid var(--border);
+    position:relative;cursor:pointer;background:var(--bg2)
+  }
+  .gallery-item img{width:100%;height:100%;object-fit:cover;transition:.3s}
+  .gallery-item:hover img{transform:scale(1.05)}
+  .gallery-item .ov{
+    position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;
+    transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px
+  }
+  .gallery-item:hover .ov{opacity:1}
+  .gallery-item .ov button{
+    width:36px;height:36px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.9);cursor:pointer;font-size:15px
+  }
+  .gallery-empty{
+    grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;font-size:13px
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    padding:12px 20px;border-radius:10px;font-size:13px;box-shadow:var(--shadow-lg);
+    opacity:0;transition:.3s;z-index:100
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* Modal preview */
+  .modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;
+    display:none;align-items:center;justify-content:center;padding:20px
+  }
+  .modal.show{display:flex}
+  .modal img{max-width:90vw;max-height:85vh;border-radius:10px;box-shadow:var(--shadow-lg)}
+  .modal .close{
+    position:absolute;top:20px;right:24px;background:var(--surface);
+    border:none;color:#fff;font-size:24px;width:44px;height:44px;border-radius:50%;cursor:pointer
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="why_portofolio.html" class="btn-back">← Kembali</a>
+    <div class="brand">
+      <div class="logo">📸</div>
+      <div>
+        <b>Photobooth</b>
+        <span class="sub">Demo Sederhana</span>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:var(--muted)">Powered by WebRTC + Canvas</div>
+</div>
+
+<div class="container">
+  <div class="layout">
+    <!-- Camera Side -->
+    <div>
+      <div class="cam-panel">
+        <div class="cam-stage" id="camStage">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="cam-grid"></div>
+          <div class="cam-badge"><span class="rec-dot"></span> LIVE</div>
+          <div class="cam-overlay"><div class="countdown" id="countdown"></div></div>
+          <div class="flash" id="flash"></div>
+          <div class="cam-error">
+            <div class="ic">📷</div>
+            <div>
+              <b style="font-size:15px">Kamera tidak dapat diakses</b><br>
+              <span style="font-size:12px;color:var(--muted)">Izinkan akses kamera di browser, lalu coba lagi.</span>
+            </div>
+            <button onclick="startCamera()">Coba Lagi</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="ctrl-row">
+            <span class="ctrl-label">Filter</span>
+            <div class="filter-pills" id="filterPills">
+              <div class="pill active" data-filter="none">Normal</div>
+              <div class="pill" data-filter="grayscale(100%)">B&W</div>
+              <div class="pill" data-filter="sepia(80%)">Sepia</div>
+              <div class="pill" data-filter="contrast(140%) saturate(130%)">Vivid</div>
+              <div class="pill" data-filter="hue-rotate(180deg)">Cool</div>
+              <div class="pill" data-filter="saturate(160%) hue-rotate(-25deg)">Warm</div>
+              <div class="pill" data-filter="invert(100%)">Invert</div>
+              <div class="pill" data-filter="blur(1.5px) brightness(110%)">Dreamy</div>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <label class="toggle">
+              <input type="checkbox" id="mirrorToggle" checked>
+              <span class="sw"></span>
+              <span>🪞 Mirror</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="gridToggle" checked>
+              <span class="sw"></span>
+              <span>⊞ Grid</span>
+            </label>
+            <label class="toggle" style="margin-left:auto">
+              <input type="checkbox" id="countToggle" checked>
+              <span class="sw"></span>
+              <span>⏱️ Countdown 3s</span>
+            </label>
+          </div>
+          <div class="ctrl-row" style="margin-top:16px">
+            <button class="btn capture" id="captureBtn" onclick="capture()">
+              📷 Ambil Foto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strip Side -->
+    <div>
+      <div class="strip-panel">
+        <div class="strip-head">
+          <h3>🖼️ Photo Strip</h3>
+          <span class="count" id="stripCount">0 / 4</span>
+        </div>
+
+        <div class="photo-strip empty" id="photoStrip">
+          <div style="text-align:center;color:var(--muted);font-size:13px">
+            <div style="font-size:36px;margin-bottom:10px">🎞️</div>
+            Ambil 4 foto untuk membentuk strip fotobooth
+          </div>
+        </div>
+
+        <div class="strip-actions">
+          <button class="btn ghost" onclick="resetStrip()" id="resetBtn" disabled>🗑️ Reset</button>
+          <button class="btn success" onclick="downloadStrip()" id="downloadBtn" disabled>⬇️ Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="gallery">
+    <div class="gallery-head">
+      <h3>🗂️ Galeri Foto</h3>
+      <button class="btn ghost" style="padding:7px 12px;font-size:12px" onclick="clearGallery()">Bersihkan</button>
+    </div>
+    <div class="gallery-grid" id="gallery"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <button class="close" onclick="closeModal()">×</button>
+  <img id="modalImg" src="" alt="Preview" />
+</div>
+
+<canvas id="canvas" style="display:none"></canvas>
+
+<script>
+/* ============ STATE ============ */
+const STRIP_SLOTS = 4;
+let stream = null;
+let currentFilter = 'none';
+let isMirror = true;
+let isGrid = true;
+let useCountdown = true;
+let capturing = false;
+let stripPhotos = [];      // dataURL per slot
+let gallery = JSON.parse(localStorage.getItem('photobooth_gallery') || '[]');
+
+/* ============ ELEMENTS ============ */
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const camStage = document.getElementById('camStage');
+const countdownEl = document.getElementById('countdown');
+const flashEl = document.getElementById('flash');
+const captureBtn = document.getElementById('captureBtn');
+const photoStrip = document.getElementById('photoStrip');
+const stripCount = document.getElementById('stripCount');
+const resetBtn = document.getElementById('resetBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const galleryEl = document.getElementById('gallery');
+const gridEl = document.querySelector('.cam-grid');
+
+/* ============ CAMERA ============ */
+async function startCamera(){
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'user', width:{ideal:1280}, height:{ideal:720}},
+      audio:false
+    });
+    video.srcObject = stream;
+    camStage.classList.remove('error');
+    captureBtn.disabled = false;
+    toast('Kamera siap 📸');
+  }catch(err){
+    camStage.classList.add('error');
+    captureBtn.disabled = true;
+    console.warn('Camera error:', err);
+  }
+}
+
+/* ============ FILTERS ============ */
+function applyFilter(){
+  video.style.filter = currentFilter === 'none' ? 'none' : currentFilter;
+}
+document.getElementById('filterPills').addEventListener('click', e=>{
+  const pill = e.target.closest('.pill');
+  if(!pill) return;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  pill.classList.add('active');
+  currentFilter = pill.dataset.filter;
+  applyFilter();
+});
+
+/* ============ TOGGLES ============ */
+document.getElementById('mirrorToggle').addEventListener('change', e=>{
+  isMirror = e.target.checked;
+  video.classList.toggle('mirror', isMirror);
+});
+document.getElementById('gridToggle').addEventListener('change', e=>{
+  isGrid = e.target.checked;
+  gridEl.style.display = isGrid ? 'block' : 'none';
+});
+document.getElementById('countToggle').addEventListener('change', e=>{
+  useCountdown = e.target.checked;
+});
+
+/* ============ CAPTURE ============ */
+async function capture(){
+  if(capturing || !stream) return;
+  capturing = true;
+  captureBtn.disabled = true;
+
+  if(useCountdown){
+    for(let i=3;i>=1;i--){
+      countdownEl.textContent = i;
+      countdownEl.classList.add('show');
+      await wait(900);
+      countdownEl.classList.remove('show');
+      await wait(100);
+    }
+  }
+
+  // Flash
+  flashEl.classList.add('fire');
+  setTimeout(()=>flashEl.classList.remove('fire'), 400);
+
+  // Draw to canvas (apply mirror + filter)
+  const w = video.videoWidth || 1280;
+  const h = video.videoHeight || 720;
+  canvas.width = w; canvas.height = h;
+  ctx.save();
+  if(isMirror){ ctx.translate(w,0); ctx.scale(-1,1); }
+  ctx.filter = currentFilter === 'none' ? 'none' : currentFilter;
+  ctx.drawImage(video, 0, 0, w, h);
+  ctx.restore();
+
+  const dataURL = canvas.toDataURL('image/jpeg', 0.92);
+  addToStrip(dataURL);
+  addToGallery(dataURL);
+
+  capturing = false;
+  captureBtn.disabled = false;
+}
+
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+
+/* ============ PHOTO STRIP ============ */
+function addToStrip(dataURL){
+  if(stripPhotos.length >= STRIP_SLOTS){
+    // shift: buang foto pertama, geser
+    stripPhotos.shift();
+  }
+  stripPhotos.push(dataURL);
+  renderStrip();
+}
+
+function renderStrip(){
+  stripCount.textContent = `${stripPhotos.length} / ${STRIP_SLOTS}`;
+  resetBtn.disabled = stripPhotos.length === 0;
+
+  if(stripPhotos.length === 0){
+    photoStrip.classList.add('empty');
+    photoStrip.innerHTML = `
+      <div style="text-align:center;color:var(--muted);font-size:13px">
+        <div style="font-size:36px;margin-bottom:10px">🎞️</div>
+        Ambil 4 foto untuk membentuk strip fotobooth
+      </div>`;
+    downloadBtn.disabled = true;
+    return;
+  }
+
+  photoStrip.classList.remove('empty');
+  downloadBtn.disabled = stripPhotos.length < 1;
+
+  let html = '';
+  for(let i=0;i<STRIP_SLOTS;i++){
+    if(stripPhotos[i]){
+      html += `<div class="strip-frame"><span class="num">${i+1}</span><img src="${stripPhotos[i]}"></div>`;
+    }else{
+      html += `<div class="strip-frame empty"></div>`;
+    }
+  }
+  html += `
+    <div class="strip-footer">
+      <div class="brand-s">PHOTOBOOTH</div>
+      <div class="date">${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}</div>
+    </div>`;
+  photoStrip.innerHTML = html;
+
+  if(stripPhotos.length === STRIP_SLOTS){
+    toast('Strip lengkap! 🎉 Siap diunduh');
+    photoStrip.style.animation = 'pop .4s';
+    setTimeout(()=>photoStrip.style.animation='',400);
+  }
+}
+
+function resetStrip(){
+  if(stripPhotos.length === 0) return;
+  if(confirm('Reset photo strip?')){
+    stripPhotos = [];
+    renderStrip();
+    toast('Strip direset');
+  }
+}
+
+function downloadStrip(){
+  if(stripPhotos.length === 0) return;
+  // Render strip ke canvas besar untuk download
+  const W = 600, padding = 30, gap = 14, headerH = 50;
+  const frameH = (W - padding*2) * 0.75; // 4:3
+  const H = padding + headerH + (frameH * STRIP_SLOTS) + (gap * (STRIP_SLOTS-1)) + padding;
+
+  const dc = document.createElement('canvas');
+  dc.width = W; dc.height = H;
+  const dctx = dc.getContext('2d');
+
+  // Background putih
+  dctx.fillStyle = '#ffffff';
+  dctx.fillRect(0,0,W,H);
+
+  // Header
+  dctx.fillStyle = '#9333ea';
+  dctx.font = 'bold 26px sans-serif';
+  dctx.textAlign = 'center';
+  dctx.fillText('PHOTOBOOTH', W/2, padding + 24);
+  dctx.fillStyle = '#666';
+  dctx.font = '13px sans-serif';
+  dctx.fillText(new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),
+                W/2, padding + 44);
+
+  // Draw each photo
+  let y = padding + headerH;
+  const x = padding;
+  const fw = W - padding*2;
+
+  let loaded = 0;
+  const imgs = stripPhotos.map((src,i)=>()=>{
+    return new Promise(res=>{
+      const img = new Image();
+      img.onload = ()=>{
+        dctx.drawImage(img, x, y, fw, frameH);
+        // nomor
+        dctx.fillStyle = 'rgba(0,0,0,.5)';
+        dctx.fillRect(x+8, y+8, 28, 20);
+        dctx.fillStyle = '#fff';
+        dctx.font = 'bold 12px sans-serif';
+        dctx.textAlign = 'center';
+        dctx.fillText(i+1, x+22, y+22);
+        y += frameH + gap;
+        res();
+      };
+      img.src = src;
+    });
+  });
+
+  (async()=>{
+    for(const fn of imgs) await fn();
+    // Trigger download
+    const link = document.createElement('a');
+    link.download = `photobooth-strip-${Date.now()}.png`;
+    link.href = dc.toDataURL('image/png');
+    link.click();
+    toast('Strip berhasil diunduh ⬇️');
+  })();
+}
+
+/* ============ GALLERY ============ */
+function addToGallery(dataURL){
+  gallery.unshift({id:Date.now(), src:dataURL});
+  if(gallery.length > 24) gallery.pop();
+  localStorage.setItem('photobooth_gallery', JSON.stringify(gallery));
+  renderGallery();
+}
+
+function renderGallery(){
+  if(gallery.length === 0){
+    galleryEl.innerHTML = '<div class="gallery-empty">Belum ada foto. Ambil foto pertama kamu! 📷</div>';
+    return;
+  }
+  galleryEl.innerHTML = gallery.map(g=>`
+    <div class="gallery-item">
+      <img src="${g.src}" onclick="openModal('${g.id}')">
+      <div class="ov">
+        <button onclick="openModal('${g.id}')" title="Lihat">👁️</button>
+        <button onclick="downloadOne('${g.id}')" title="Unduh">⬇️</button>
+        <button onclick="deleteOne('${g.id}')" title="Hapus">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function openModal(id){
+  const g = gallery.find(x=>x.id == id);
+  if(!g) return;
+  document.getElementById('modalImg').src = g.src;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+
+function downloadOne(id){
+  const g = gallery.find(x=>x.id == id);
+  if(!g) return;
+  const link = document.createElement('a');
+  link.download = `photobooth-${id}.png`;
+  link.href = g.src;
+  link.click();
+  toast('Foto diunduh ⬇️');
+}
+function deleteOne(id){
+  gallery = gallery.filter(x=>x.id != id);
+  localStorage.setItem('photobooth_gallery', JSON.stringify(gallery));
+  renderGallery();
+  toast('Foto dihapus');
+}
+function clearGallery(){
+  if(gallery.length === 0) return;
+  if(confirm('Hapus semua foto di galeri?')){
+    gallery = [];
+    localStorage.removeItem('photobooth_gallery');
+    renderGallery();
+    toast('Galeri dibersihkan');
+  }
+}
+
+/* ============ TOAST ============ */
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ============ KEYBOARD ============ */
+document.addEventListener('keydown', e=>{
+  if(e.code === 'Space' && !capturing){
+    e.preventDefault();
+    capture();
+  }
+  if(e.key === 'Escape') closeModal();
+});
+
+/* ============ INIT ============ */
+video.classList.add('mirror');
+renderStrip();
+renderGallery();
+startCamera();
+</script>
+</body>
+</html>
