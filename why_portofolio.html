@@ -90,6 +90,50 @@
         }
         .nav-links a:hover { color: var(--accent-cyan); }
 
+        /* === MOBILE MENU TOGGLE (HAMBURGER) === */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            position: relative;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--primary-navy);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-overlay.active { display: block; opacity: 1; }
+
+
         /* === SECTION 1: WHY CHOOSE US === */
         .why-section {
             width: 100%;
@@ -298,18 +342,33 @@
             width: 100%;
             height: 180px;
             background: rgba(6, 182, 212, 0.05);
-            border: 1px dashed rgba(6, 182, 212, 0.3);
+            border: 1px solid rgba(6, 182, 212, 0.3);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--dark-accent);
             transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .port-card-img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+            transition: transform 0.4s ease;
         }
 
         .port-card:hover .port-card-img-placeholder {
             background: rgba(6, 182, 212, 0.15);
-            border-style: solid;
+            border-color: rgba(6, 182, 212, 0.6);
+        }
+
+        .port-card:hover .port-card-img-placeholder img {
+            transform: scale(1.06);
         }
 
         .port-card-title {
@@ -396,6 +455,15 @@
             color: var(--secondary-slate);
             font-size: 1.2rem;
             font-weight: bold;
+            overflow: hidden;
+        }
+
+        .modal-body-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
         }
 
         .modal-title {
@@ -537,7 +605,25 @@
 
         /* === RESPONSIVE === */
         @media (max-width: 1100px) {
-            .nav-links { display: none; }
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: min(300px, 80vw);
+                height: 100vh;
+                background: var(--card-white);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 28px;
+                padding: 40px;
+                box-shadow: -10px 0 40px rgba(15, 23, 42, 0.15);
+                transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: 1000;
+            }
+            .nav-links.active { right: 0; }
+            .nav-links a { font-size: 1.15rem; }
             .footer-acronym { flex-direction: column; gap: 10px; }
             .footer-acronym li:not(:last-child)::after { display: none; }
         }
@@ -570,7 +656,7 @@
     <!-- === NAVBAR === -->
     <nav class="navbar" id="navbar">
         <a href="home.html" class="nav-logo">SYN<span>EXA</span></a>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="home.html">Home</a></li>
             <li><a href="Business-Industries.html">Industries</a></li>
             <li><a href="Trusted_Solution.html">Solutions</a></li>
@@ -580,7 +666,11 @@
             <li><a href="why_portofolio.html" style="color:var(--accent-cyan);">Portfolio</a></li>
             <li><a href="faq-contact.html">Contact</a></li>
         </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Buka menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
 
     <!-- === SECTION 1: WHY CHOOSE US === -->
     <section class="why-section">
@@ -672,65 +762,65 @@
         <div class="slider-container" id="portfolioSlider">
             
             <!-- Card 1: Sales CRM -->
-            <div class="port-card" data-title="Sales CRM" data-tag="Customer Management" data-ref="salesCRM.html">
+            <div class="port-card" data-title="Sales CRM" data-tag="Customer Management" data-ref="salesCRM.html" data-img="assets/thumb-salescrm.jpg">
                 <div class="port-card-tag">Customer Management</div>
                 <h3 class="port-card-title">Sales CRM</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                    <img src="assets/thumb-salescrm.jpg" alt="Tampilan dashboard Sales CRM" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 2: ERP Retail -->
-            <div class="port-card" data-title="ERP Retail" data-tag="Enterprise System" data-ref="erp-retail.html">
+            <div class="port-card" data-title="ERP Retail" data-tag="Enterprise System" data-ref="erp-retail.html" data-img="assets/thumb-erp.jpg">
                 <div class="port-card-tag">Enterprise System</div>
                 <h3 class="port-card-title">ERP Retail</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" /></svg>
+                    <img src="assets/thumb-erp.jpg" alt="Tampilan dashboard ERP Retail" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 3: Warehouse -->
-            <div class="port-card" data-title="Warehouse" data-tag="Logistics Module" data-ref="warehouse-demo.html">
+            <div class="port-card" data-title="Warehouse" data-tag="Logistics Module" data-ref="warehouse-demo.html" data-img="assets/thumb-warehouse.jpg">
                 <div class="port-card-tag">Logistics Module</div>
                 <h3 class="port-card-title">Warehouse</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m8.25-3v-6.5a2.25 2.25 0 00-.659-1.591l-7.5-7.5a2.25 2.25 0 00-3.182 0l-7.5 7.5a2.25 2.25 0 00-.659 1.591v6.5a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25z" /></svg>
+                    <img src="assets/thumb-warehouse.jpg" alt="Tampilan dashboard Warehouse" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 4: Inventory -->
-            <div class="port-card" data-title="Inventory" data-tag="Stock Management" data-ref="stock-inventory-demo.html">
+            <div class="port-card" data-title="Inventory" data-tag="Stock Management" data-ref="stock-inventory-demo.html" data-img="assets/thumb-inventory.jpg">
                 <div class="port-card-tag">Stock Management</div>
                 <h3 class="port-card-title">Inventory</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+                    <img src="assets/thumb-inventory.jpg" alt="Tampilan dashboard Inventory" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 5: HR -->
-            <div class="port-card" data-title="HR" data-tag="Human Resources" data-ref="hr-demo.html">
+            <div class="port-card" data-title="HR" data-tag="Human Resources" data-ref="hr-demo.html" data-img="assets/thumb-hr.jpg">
                 <div class="port-card-tag">Human Resources</div>
                 <h3 class="port-card-title">HR</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                    <img src="assets/thumb-hr.jpg" alt="Tampilan dashboard HR" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 6: Photobooth AI -->
-            <div class="port-card" data-title="Photobooth AI" data-tag="Artificial Intelligence" data-ref="photobooth.html">
+            <div class="port-card" data-title="Photobooth AI" data-tag="Artificial Intelligence" data-ref="photobooth.html" data-img="assets/thumb-photobooth.jpg">
                 <div class="port-card-tag">Artificial Intelligence</div>
                 <h3 class="port-card-title">Photobooth AI</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
+                    <img src="assets/thumb-photobooth.jpg" alt="Tampilan Photobooth AI" loading="lazy">
                 </div>
             </div>
 
             <!-- Card 7: Approval Workflow -->
-            <div class="port-card" data-title="Approval Workflow" data-tag="Automation" data-ref="approval.html">
+            <div class="port-card" data-title="Approval Workflow" data-tag="Automation" data-ref="approval.html" data-img="assets/thumb-approval.jpg">
                 <div class="port-card-tag">Automation</div>
                 <h3 class="port-card-title">Approval Workflow</h3>
                 <div class="port-card-img-placeholder">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <img src="assets/thumb-approval.jpg" alt="Tampilan Approval Workflow" loading="lazy">
                 </div>
             </div>
 
@@ -750,10 +840,10 @@
     <div class="modal-overlay" id="portModal">
         <div class="modal-content">
             <button class="modal-close" id="closePortModal">✕</button>
-            <div class="modal-body-img">Mockup / Screenshot Area</div>
+            <div class="modal-body-img"><img id="portImg" src="" alt="" loading="lazy"></div>
             <h2 class="modal-title" id="portTitle">Project Title</h2>
             <p class="modal-desc" id="portDesc">Project description goes here.</p>
-            <a href="#" class="modal-demo-btn" id="portDemoLink" target="_blank" rel="noopener">
+            <a href="#" class="modal-demo-btn" id="portDemoLink">
                 Lihat Demo
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L12 6M6 6h6v6"/></svg>
             </a>
@@ -813,6 +903,7 @@
         const portTitle = document.getElementById('portTitle');
         const portDesc = document.getElementById('portDesc');
         const portDemoLink = document.getElementById('portDemoLink');
+        const portImg = document.getElementById('portImg');
 
         const portfolioDetails = {
             "Sales CRM": "Sistem CRM kustom untuk mengelola prospek, melacak metrik KPI tim penjualan, dan mengotomatiskan siklus follow-up klien dari hulu ke hilir.",
@@ -828,8 +919,13 @@
             card.addEventListener('click', () => {
                 const title = card.getAttribute('data-title');
                 const ref = card.getAttribute('data-ref');
+                const img = card.getAttribute('data-img');
                 portTitle.textContent = title;
                 portDesc.textContent = portfolioDetails[title] || "Detail portofolio ini sedang dalam tahap pembaruan data.";
+                if (img) {
+                    portImg.src = img;
+                    portImg.alt = "Tampilan " + title;
+                }
                 if (ref) {
                     portDemoLink.href = ref;
                     portDemoLink.style.display = 'inline-flex';
@@ -851,5 +947,34 @@
             }
         });
     </script>
+    <script>
+        // === MOBILE MENU TOGGLE ===
+        (function() {
+            const navToggle = document.getElementById('navToggle');
+            const navLinksEl = document.getElementById('navLinks');
+            const navOverlay = document.getElementById('navOverlay');
+            if (!navToggle || !navLinksEl || !navOverlay) return;
+
+            function closeMenu() {
+                navToggle.classList.remove('active');
+                navLinksEl.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            navToggle.addEventListener('click', () => {
+                const isActive = navLinksEl.classList.toggle('active');
+                navToggle.classList.toggle('active', isActive);
+                navOverlay.classList.toggle('active', isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            });
+
+            navOverlay.addEventListener('click', closeMenu);
+            navLinksEl.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        })();
+    </script>
 </body>
+
 </html>
