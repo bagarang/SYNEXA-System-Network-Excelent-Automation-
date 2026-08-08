@@ -1,9 +1,41 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYNEXA - SAP Web Development</title>
+    <title>SYNEXA | SAP Web Development & Smart Technology</title>
+    <meta name="description" content="SYNEXA - SAP Web Development and smart technology solutions for modern business. Transforming business through smart technology.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="SYNEXA">
+    <link rel="canonical" href="https://synexa-sap-system.netlify.app/">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://synexa-sap-system.netlify.app/">
+    <meta property="og:title" content="SYNEXA | SAP Web Development & Smart Technology">
+    <meta property="og:description" content="SAP Web Development and smart technology solutions for modern business.">
+    <meta property="og:image" content="https://synexa-sap-system.netlify.app/logo.png">
+    <meta property="og:site_name" content="SYNEXA">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SYNEXA | SAP Web Development & Smart Technology">
+    <meta name="twitter:description" content="SAP Web Development and smart technology solutions for modern business.">
+    <meta name="twitter:image" content="https://synexa-sap-system.netlify.app/logo.png">
+
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Organization structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SYNEXA",
+      "url": "https://synexa-sap-system.netlify.app/",
+      "logo": "https://synexa-sap-system.netlify.app/logo.png",
+      "description": "SAP Web Development and smart technology solutions for modern business."
+    }
+    </script>
     <style>
         /* === RESET & BASE STYLES === */
         * {
@@ -34,6 +66,7 @@
             height: 100%;
             z-index: 1;
             pointer-events: auto; /* Memastikan interaksi mouse tetap berjalan */
+            touch-action: none;
         }
 
         /* === MAIN CONTENT === */
@@ -162,12 +195,12 @@
 <body>
 
     <!-- Background Interaktif: Garis & Node Modern -->
-    <canvas id="networkCanvas"></canvas>
+    <canvas id="networkCanvas" aria-hidden="true"></canvas>
 
     <!-- Layer Konten Utama -->
-    <div class="content-wrapper">
+    <main class="content-wrapper" aria-labelledby="site-title">
         <!-- Logo -->
-        <img src="logo.png" alt="SYNEXA Logo" class="logo-img">
+        <img src="logo.png" alt="SYNEXA - SAP Web Development" class="logo-img" width="500" decoding="async" fetchpriority="high">
         
         <!-- Akronim -->
         <div class="acronym-tag">
@@ -178,22 +211,31 @@
         </div>
 
         <!-- Tagline -->
-        <div class="tagline">
+        <h1 id="site-title" class="tagline">
             Transforming Business<br>Through Smart Technology
-        </div>
+        </h1>
 
         <!-- TOMBOL ENTER -->
         <a href="home.html" class="enter-button">ENTER DASHBOARD</a>
-    </div>
+    </main>
 
     <!-- Script Animasi Interaktif -->
     <script>
         const canvas = document.getElementById('networkCanvas');
         const ctx = canvas.getContext('2d');
         let particlesArray;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        function resizeCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.floor(window.innerWidth * dpr);
+            canvas.height = Math.floor(window.innerHeight * dpr);
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        resizeCanvas();
 
         let mouse = {
             x: null,
@@ -306,9 +348,8 @@
         }
 
         window.addEventListener('resize', function() {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            mouse.radius = ((innerHeight/80) * (innerWidth/80));
+            resizeCanvas();
+            mouse.radius = ((innerHeight / 80) * (innerWidth / 80));
             init();
         });
         
@@ -318,7 +359,14 @@
         });
 
         init();
-        animate();
+        if (prefersReducedMotion) {
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].draw();
+            }
+        } else {
+            animate();
+        }
     </script>
 </body>
 </html>
