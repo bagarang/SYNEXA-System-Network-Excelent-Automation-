@@ -1101,7 +1101,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 });
 
 // =================== CHAT LOGIC ===================
-async function sendMessage() {
+function sendMessage() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text || state.isGenerating) return;
@@ -1117,45 +1117,11 @@ async function sendMessage() {
   state.isGenerating = true;
   document.getElementById('send-btn').disabled = true;
 
-  try {
-    const response = await searchWebAnswer(text);
+  setTimeout(() => {
     hideThinking();
+    const response = generateAIResponse(text);
     streamResponse(response);
-  } catch (err) {
-    hideThinking();
-    streamResponse(`Maaf, terjadi kesalahan saat mengambil hasil pencarian.\\n\\n\`\`\`\\n${err.message}\\n\`\`\``);
-    state.isGenerating = false;
-    document.getElementById('send-btn').disabled = false;
-  }
-}
-
-// Mengirim pertanyaan user ke web search sungguhan (lewat Anthropic API + tool web_search)
-// dan mengembalikan jawaban ringkas ala "Google AI Overview".
-async function searchWebAnswer(query) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      system: "Kamu bertindak seperti mesin pencari (mirip Google AI Overview). Jawab pertanyaan pengguna secara ringkas, faktual, dan to the point berdasarkan hasil pencarian web terkini. Jawab dalam Bahasa Indonesia kecuali pertanyaannya dalam bahasa lain. Gunakan 1-4 paragraf singkat, boleh pakai **bold** untuk istilah kunci dan poin-poin (list) bila relevan. Jangan menyebut dirimu sebagai AI assistant/Claude, cukup sajikan jawabannya seperti ringkasan hasil pencarian.",
-      messages: [{ role: "user", content: query }],
-      tools: [{ type: "web_search_20250305", name: "web_search" }]
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
-  }
-
-  const data = await response.json();
-  const text = data.content
-    .filter(item => item.type === "text")
-    .map(item => item.text)
-    .join("\n\n")
-    .trim();
-
-  return text || "Tidak ditemukan jawaban untuk pertanyaan ini.";
+  }, 600);
 }
 
 function streamResponse(text) {
