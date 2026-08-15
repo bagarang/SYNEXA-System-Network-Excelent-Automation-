@@ -461,7 +461,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: top;
+            object-position: center; /* Diubah ke center agar random image terlihat rapi */
             display: block;
         }
 
@@ -500,6 +500,25 @@
             transform: translateY(-3px);
             background: #0891b2;
             box-shadow: 0 15px 35px -5px rgba(6, 182, 212, 0.6);
+        }
+
+        /* Test Credential Styling */
+        .test-credentials {
+            margin-top: 15px;
+            background: var(--bg-soft-white);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed var(--border-gray);
+            font-size: 0.95rem;
+        }
+        
+        .test-credentials ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .test-credentials li {
+            margin-bottom: 5px;
         }
 
         /* === CTA WRAPPER === */
@@ -760,12 +779,12 @@
 
         <div class="slider-container" id="portfolioSlider">
             
-            <!-- Card 0: HR_ERP System (New Entry) -->
-            <div class="port-card" data-title="HR_ERP System" data-tag="Enterprise System" data-ref="https://synexa-enterprise-system.netlify.app/" data-img="assets/thumb-hrerp.jpg">
+            <!-- Card 0: HR_ERP System (New Entry dengan Random Image dari Unsplash) -->
+            <div class="port-card" data-title="HR_ERP System" data-tag="Enterprise System" data-ref="https://synexa-enterprise-system.netlify.app/" data-img="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
                 <div class="port-card-tag">Enterprise System</div>
                 <h3 class="port-card-title">HR_ERP System</h3>
                 <div class="port-card-img-placeholder">
-                    <img src="assets/thumb-hrerp.jpg" alt="Tampilan dashboard HR_ERP System" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tampilan dashboard HR_ERP System" loading="lazy">
                 </div>
             </div>
 
@@ -859,7 +878,7 @@
             <button class="modal-close" id="closePortModal">✕</button>
             <div class="modal-body-img"><img id="portImg" src="" alt="" loading="lazy"></div>
             <h2 class="modal-title" id="portTitle">Project Title</h2>
-            <p class="modal-desc" id="portDesc">Project description goes here.</p>
+            <div class="modal-desc" id="portDesc">Project description goes here.</div>
             <a href="#" class="modal-demo-btn" id="portDemoLink">
                 Lihat Demo
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L12 6M6 6h6v6"/></svg>
@@ -923,7 +942,17 @@
         const portImg = document.getElementById('portImg');
 
         const portfolioDetails = {
-            "HR_ERP System": "Sistem komprehensif HR_ERP yang mencakup manajemen operasional skala enterprise. Karena ini adalah platform portal, tautan akan diarahkan langsung menuju sistem eksternal deployment kami (Netlify).",
+            "HR_ERP System": `Sistem komprehensif HR_ERP yang mencakup manajemen operasional skala enterprise. Platform ini diarahkan langsung menuju deployment eksternal.
+            <div class="test-credentials">
+                <strong>Akun Testing (Demo):</strong>
+                <ul>
+                    <li>ID: <b>OWN001</b> | Pass: <b>synexa123</b> (Owner)</li>
+                    <li>ID: <b>HRD001</b> | Pass: <b>synexa123</b> (HRD)</li>
+                    <li>ID: <b>FIN001</b> | Pass: <b>synexa123</b> (Finance)</li>
+                    <li>ID: <b>MKT001</b> | Pass: <b>synexa123</b> (Marketing)</li>
+                    <li>ID: <b>SLS001</b> | Pass: <b>synexa123</b> (Sales)</li>
+                </ul>
+            </div>`,
             "AI Studio (React Based)": "Arsitektur Single-Page Application (SPA) berbasis React untuk generasi visual (gambar/video) AI secara real-time, lengkap dengan antarmuka pengguna interaktif dan penyesuaian parameter khusus.",
             "Sales CRM": "Sistem CRM kustom untuk mengelola prospek, melacak metrik KPI tim penjualan, dan mengotomatiskan siklus follow-up klien dari hulu ke hilir.",
             "ERP Retail": "Solusi Enterprise Resource Planning (ERP) menyeluruh untuk industri ritel, mengintegrasikan kasir (POS), pembelian, hingga pembukuan keuangan sentral.",
@@ -941,7 +970,8 @@
                 const img = card.getAttribute('data-img');
                 
                 portTitle.textContent = title;
-                portDesc.textContent = portfolioDetails[title] || "Detail portofolio ini sedang dalam tahap pembaruan data.";
+                // Menggunakan innerHTML agar tag HTML (seperti daftar akun testing) ter-render dengan baik
+                portDesc.innerHTML = portfolioDetails[title] || "Detail portofolio ini sedang dalam tahap pembaruan data.";
                 
                 if (img) {
                     portImg.src = img;
@@ -951,7 +981,7 @@
                 if (ref) {
                     portDemoLink.href = ref;
                     portDemoLink.style.display = 'inline-flex';
-                    // Jika link eksternal (menggunakan http/https), buka di tab baru agar pengunjung tidak lepas dari situs web utama
+                    // Jika link eksternal (menggunakan http/https), buka di tab baru
                     if(ref.startsWith('http')) {
                         portDemoLink.setAttribute('target', '_blank');
                         portDemoLink.setAttribute('rel', 'noopener noreferrer');
